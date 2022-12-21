@@ -1,5 +1,6 @@
 package evol.gen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface IWorldMap {
@@ -44,4 +45,8 @@ public interface IWorldMap {
     HashMap<Vector2d,Animal> getAnimals();
     HashMap<Vector2d, Grass> getGrasses();
 
+    void addAnimal(Vector2d vectorek, Animal animal);
+    void goSomewhereElse(Animal animal,Vector2d vector);
+
+    ArrayList<Animal> moveAllAnimalsToArrayList();
 }

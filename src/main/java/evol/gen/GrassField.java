@@ -4,22 +4,16 @@ import java.util.*;
 public class GrassField extends AbstractWorldMap{
     int n;
 
-    private final HashMap<Vector2d,Grass> grasses = new HashMap<>();
+    private HashMap<Vector2d,Grass> grasses = new HashMap<>();
     public GrassField(int width,int height,int n){
-        super(new Vector2d(width,height),new Vector2d(0,0));//nie wplynie na wielkosc mapy w klasie nadrzednej!
+        super(new Vector2d(width,height));//nie wplynie na wielkosc mapy w klasie nadrzednej!
         this.n = n;
-        super.boundary = (int)(Math.sqrt(n*10));
-        //this.topRight = new Vector2d(this.boundary,this.boundary);
         this.createGrasses(this.n);
-//        grasses.stream().forEach(grass->{
-//            System.out.println(grass.getPosition());
-//        });
     }
 
     public void createGrasses(int n){ //definiuje ile mozna stworzyc nowych trawek i randomowo je umeiszcza tam gdzie nie ma obiektow
         for(int i = 0; i < n; i++){
-            Vector2d newVec = uniqPosVector(new Vector2d(super.boundary,super.boundary));
-            //update granicy!
+            Vector2d newVec = uniqPosVector(new Vector2d(topRight.x,topRight.y));
             grasses.put(newVec,new Grass(newVec));
 
         }
@@ -39,6 +33,11 @@ public class GrassField extends AbstractWorldMap{
                 grasses.get(position);
     }
 
+    @Override
+    public HashMap<Vector2d, Animal> getAnimals() {
+        return null;
+    }
+
 
     public HashMap<Vector2d, Grass> getGrasses() {
         return grasses;
@@ -50,5 +49,25 @@ public class GrassField extends AbstractWorldMap{
         this.grasses.put(newPosition, grass);
     }
 
+    protected void eatingGrass(Vector2d vector){
+        if(super.getNumberOfAnimalsAtPosition(vector) > 0){
+            this.grasses.remove(vector);
+            super.eatingGrass(vector);
+        }
+    }
 
+    protected void eatingTime(){
+        ArrayList<Vector2d> originalVectorki= new ArrayList<>();
+        Set<Vector2d> keys = this.grasses.keySet();
+        originalVectorki.addAll(keys);
+        originalVectorki.forEach(vector->{
+           this.eatingGrass(vector);
+        });
+    }
+
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        return;
+    }
 }

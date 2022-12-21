@@ -26,4 +26,27 @@ public class OptionsParser {
         int leng = Move_direction_list.size();
         return Move_direction_list.toArray(new MoveDirection[leng]);
     }
+
+
+    public MoveDirection parseOneOption(char elem){
+        MoveDirection direction = MoveDirection.rotate0;
+            if (elem == '0') {
+                direction = MoveDirection.rotate0;
+            } else if (elem == '1') {
+                direction = MoveDirection.rotate1;
+            } else if (elem == '2') {
+                direction = MoveDirection.rotate2;
+            } else if (elem == '3') {
+                direction = MoveDirection.rotate3;
+            }else if (elem == '4') {
+                direction = MoveDirection.rotate4;
+            }else if (elem == '5') {
+                direction = MoveDirection.rotate5;
+            }else if (elem == '6') {
+                direction = MoveDirection.rotate6;
+            }else if (elem == '7') {
+                direction = MoveDirection.rotate7;
+            }
+        return direction;
+    }
 }

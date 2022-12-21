@@ -1,41 +1,56 @@
 package evol.gen;
-//import agh.ics.oop.gui.App;
-//import javafx.application.Platform;
+import evol.gen.gui.App;
+import javafx.application.Platform;
 import java.util.*;
 
 
 public class SimulationEngine implements IEngine,Runnable {
 
-    private final IWorldMap myMap;
+    private final GrassField myMap;
     //private App observer;
-    private int moveDelay;
+    private int moveDelay = 300;
     private final boolean isAppOpening;
-    private final Vector2d[] positions;//tylko raz z tego pola korzystamy
-    public SimulationEngine(IWorldMap map, Vector2d[] positions, int moveDelay) {
+    private final boolean someMadness = false;
+    private App observer;
+    public SimulationEngine(GrassField map,int initAnimals,int moveDelay) {
         this.myMap = map;
-        this.positions = positions;
+
         //this.observer = app;
         this.moveDelay = moveDelay;
         this.isAppOpening = true;
 
-        Arrays.stream(positions).forEach(position-> {
-            Animal animal = new Animal(this.myMap, position);
-            this.myMap.place(animal);//jak zwierze najdzie na inne, to nie zostanie dodane do mapy
-        });
+        for(int i = 0; i < initAnimals;i++){
+            Vector2d newVec =((GrassField) this.myMap).getRandom(((GrassField)this.myMap).topRight);
+            Animal animal = new Animal(this.myMap, newVec);
+            this.myMap.place(animal);
+        }
         //System.out.println(myMap.toString());
     }
 
-    public SimulationEngine(IWorldMap map, Vector2d[] positions) {
+    public SimulationEngine(GrassField map, int initAnimals) {
         this.myMap = map; //nasza kochana mapa
-        this.positions = positions; //pozycje startowe
-        this.isAppOpening =false;
 
-        Arrays.stream(positions).forEach(position-> {
-            Animal animal = new Animal(this.myMap, position);
-            this.myMap.place(animal);//jak zwierze najdzie na inne, to nie zostanie dodane do mapy
-        });
+        this.isAppOpening =false;
+        for(int i = 0; i < initAnimals;i++){
+            Vector2d newVec =((GrassField) this.myMap).getRandom(((GrassField)this.myMap).topRight);
+            Animal animal = new Animal(this.myMap, newVec);
+            this.myMap.place(animal);
+        }
         System.out.println(myMap.toString());
     }
+
+    public SimulationEngine(GrassField map, int initAnimals,App app) {
+        this.myMap = map; //nasza kochana mapa
+        this.observer = app;
+        this.isAppOpening =false;
+        for(int i = 0; i < initAnimals;i++){
+            Vector2d newVec =((GrassField) this.myMap).getRandom(((GrassField)this.myMap).topRight);
+            Animal animal = new Animal(this.myMap, newVec);
+            this.myMap.place(animal);
+        }
+        System.out.println(myMap.toString());
+    }
+
 
     @Override
     public void run() {
@@ -56,32 +71,74 @@ public class SimulationEngine implements IEngine,Runnable {
                     //podaną listę aktywnych genów dodajemy do parsera, przeksztalci nam je w MoveDirection)
                     // zwierzątka się zaczynają poruszać (tutaj zajdzie duzo roznych akcji)
            //warunek pętli: (poniewaz wiemy, ze kazdy zwierzak ma taką samą długość genomu, to wybierzmy jeden ze zwierzakow i dla niego robmy warunek)
-        int counter = 0;
-        int animalCounter = this.myMap.getAnimals().size();
-        int index = 0;
-        List<Animal> listAnimals = new ArrayList<Animal>(this.myMap.getAnimals().values());
-        while(!listAnimals.isEmpty() && counter < listAnimals.get(0).gen.length()){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
 
-            listAnimals = new ArrayList<Animal>(this.myMap.getAnimals().values()); //wazne! to sie bedzie zmieniac! zwierzaki będą dodawane i usuwane
-            animalCounter = this.myMap.getAnimals().size();//to sie bedzie zmieniac (zwierzaki mogą być usuwane i dodawane)
-            index = 0;//po kazdym dniu wracamy do indeksu zerowego (pierwszego zwierzaka)
-            StringBuilder activatedGens = new StringBuilder(); //string aktywnych genow!
-            listAnimals.stream().forEach((animal)->{
-                activatedGens.append(animal.gen.charAt(animal.activatedGen));
-                //gdy to juz zrobimy, dane zwierze zmienia aktywny gen na kolejny u niego na liscie
-                animal.nextActivatedGen();
+        this.observer.updateMap();
+
+        try{
+            Thread.sleep(moveDelay);
+        int maxDay = this.myMap.genLimit;
+        int counter = 0;
+        while(counter < maxDay){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
+            System.out.println("przed usuwaniem zwlok: ");
+            System.out.println(this.myMap);
+            this.myMap.removingCorpse();
+            System.out.println("po usunieciu zwlok: ");
+            System.out.println(this.myMap);
+            //przemieszczanie sie!!! ---------------------------------------------
+            ArrayList<Vector2d> originalVectorki= new ArrayList<>();
+            Set<Vector2d> keys = this.myMap.animals.keySet();
+            originalVectorki.addAll(keys);
+            originalVectorki.stream().forEach(vector->{
+                PriorityQueue<Animal> queue = ((GrassField)this.myMap).animals.get(vector);
+                while(!queue.isEmpty()) this.myMap.temporaryAnimalsArray.add(queue.poll());
+                while(this.myMap.temporaryAnimalsArray.size() > 0){
+                    Animal animal = this.myMap.temporaryAnimalsArray.remove(this.myMap.temporaryAnimalsArray.size()-1);
+                    if(!animal.moved){
+                        int active = animal.activatedGen;
+                        animal.nextActivatedGen(someMadness);
+                        animal.move(new OptionsParser().parseOneOption(animal.gen.charAt(active)));//ta metoda z automatu dodaje do animals!
+                        animal.moved = true;
+                        System.out.println(this.myMap);
+
+                    }else{
+                        this.myMap.addAnimal(animal.position,animal);
+                    }
+                    this.observer.updateMap();
+                    try{
+                        Thread.sleep(500);
+                    }catch (InterruptedException e) {
+                        throw new RuntimeException(e + "Przerwano symulację");
+                    }
+
+
+                }
 
             });
-
-            MoveDirection[] directions = (new OptionsParser()).parse(activatedGens.toString().split(""));
-            for(MoveDirection dir : directions){
-                Animal animal = listAnimals.get(index);
-                animal.move(dir);
-                index = (index + 1) % animalCounter;
-                System.out.println(this.myMap);
-            }
+            this.myMap.clearMovedValues();
+            // koniec funkcjonalnosci zwiazanej z przemieszczaniem sie!!------------------------
+            System.out.println("po przemieszczeniu sie");
+            this.myMap.reproducingTime();
+            this.myMap.eatingTime();
+            this.myMap.reproducingTime();
+            System.out.println("-------INFO-----");
+            this.myMap.printInfo();
+            System.out.println(this.myMap);
+            System.out.println("-------INFO END-----");
+            //this.myMap.reproducingTime();
+            System.out.println("Po wykonanych pracach, przed starzeniem sie:");
+            System.out.println(this.myMap);
+            this.myMap.aging();
             counter++;
+        }
+        System.out.println("Ostateczny stan:");
+        System.out.println(this.myMap);
+            Thread.sleep(2000);
+            Platform.exit();
+            System.exit(0);
+        }catch (InterruptedException e) {
+            throw new RuntimeException(e + "Przerwano symulację");
         }
     }
 
 }
+

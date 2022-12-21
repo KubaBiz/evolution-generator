@@ -2,6 +2,7 @@ package evol.gen.gui;
 
 import evol.gen.*;
 
+import evol.gen.GrassField;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -14,69 +15,81 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class App extends Application {
+public class App extends Application{
+
     private GridPane grid = new GridPane();
-    private IWorldMap myMap;
+    private GrassField myMap;
     private final int width = 45;
     private final int height = 45;
-    public Stage stage;
+    public Stage primaryStage;
+
 
     private VBox drawObject(Vector2d position) {
-        VBox result;
-        if (myMap.isOccupied(position)) {
-            Object object = myMap.objectAt(position);
-            GuiElementBox newElem = new GuiElementBox((IMapElement) object);
-            result = newElem.getBox();
-        } else { result = new VBox(new Label("")); }
+        VBox result = null;
+        if (this.myMap.isOccupied(position)) {
+            Object object = this.myMap.objectAt(position);
+            if (object != null) {
+                GuiElementBox newElem = new GuiElementBox((IMapElement) object);
+                result = newElem.getBox();
+
+            } else {
+                result = new VBox(new Label(""));
+            }
+        } else {
+            result = new VBox(new Label(""));
+        }
         return result;
     }
-
     private void drawMap(){
         grid.setGridLinesVisible(true);
-        GrassField myMap = (GrassField) this.myMap;
-        int rangeY = myMap.getUpperRight().y - myMap.getLowerLeft().y;
-        int rangeX = myMap.getUpperRight().x - myMap.getLowerLeft().x;
+        //grid.setStyle("-fx-margin: auto;");
+        grid.setStyle("-fx-padding: 100 100 100 100;");
+        GrassField myMap = this.myMap;
+        int rangeY = myMap.getTopRight().y;
+        int rangeX = myMap.getTopRight().x;
         Label label;
-
-        label = new Label("y/x");
-        grid.getColumnConstraints().add(new ColumnConstraints(width));
-        grid.getRowConstraints().add(new RowConstraints(height));
-        grid.add(label, 0, 0);
-        GridPane.setHalignment(label, HPos.CENTER);
-
         for (int i = 0; i <= rangeY; i++) {
-            Integer value = myMap.getUpperRight().y-i;
+            Integer value = myMap.getTopRight().y-i;
 
+            //tworzenie labela dla pierwszej wspolrzednej z lewej w poszczegolnych wierszach
             label = new Label(value.toString());
+
             grid.getRowConstraints().add(new RowConstraints(height));
             grid.add(label, 0, i+1);
-            GridPane.setHalignment(label, HPos.CENTER);
 
+            GridPane.setHalignment(label, HPos.CENTER);
             for (int j = 0; j < rangeX+1; j++) {
                 if (i == 0) {
-                    value = myMap.getLowerLeft().x + j;
+                    //tworzenie labela dla pierwszej wspolrzednej z gory w poszczegolnych kolumnach
+                    value = j;
                     label = new Label(value.toString());
                     grid.add(label, j+1, 0);
                     grid.getColumnConstraints().add(new ColumnConstraints(width));
                     GridPane.setHalignment(label, HPos.CENTER);
                 }
-
-                VBox result = drawObject(new Vector2d(j+myMap.getLowerLeft().x , i+myMap.getLowerLeft().y));
+                //rysowanie i stylizowanie kwadratów na mapie
+                VBox result = drawObject(new Vector2d(j, i));
                 grid.add(result, j+1, rangeY-i+1);
                 GridPane.setHalignment(label, HPos.CENTER);
             }
         }
+        //tworzenie dodatkowego labela w lewym gornym rogu
+        label = new Label("x/y");
+        grid.getColumnConstraints().add(new ColumnConstraints(width));
+        grid.getRowConstraints().add(new RowConstraints(height));
+        grid.add(label, 0, 0);
+        GridPane.setHalignment(label, HPos.CENTER);
 
-        Scene scene = new Scene(grid, (rangeX+2)*width*1.2, (rangeY+2)*height*1.2);
-        stage.setScene(scene);
+        //tworzenie widku w okienku
+
+        Scene scene = new Scene(grid, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
+        primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
+        //primaryStage.show();
 
         System.out.println(this.myMap.toString());
-    }
-
-    public void updateMap(){
-        grid.getChildren().clear();
-        grid = new GridPane();
-        drawMap();
+        System.out.println();
+        //System.out.println("System zakończył działanie");
     }
 
     public void threadExceptionHandler(){
@@ -85,49 +98,65 @@ public class App extends Application {
             public void uncaughtException(Thread t, Throwable e) {
                 System.out.println("Nieprawidlowo wpisane dane: " + e);
                 Platform.exit();
+                System.exit(0);
             }
+        });
+
+    }
+
+    public void updateMap(){
+        Platform.runLater(()->{
+            grid.getChildren().clear();
+            this.grid = new GridPane();
+            drawMap();
         });
     }
 
-    private void startGame(SimulationEngine engine, String text){
+    private void init(SimulationEngine engine, String text){
         String[] array = text.split(" ");
-        MoveDirection[] directions = new OptionsParser().parse(array);
-        engine.setDirections(directions);
         Thread threadEngine = new Thread(engine);
         threadEngine.start();
+
     }
 
     public void start(Stage primaryStage) {
         try {
+
             threadExceptionHandler();
 
-            AbstractWorldMap map = new GrassField(10);
-            myMap = map;
-            stage = primaryStage;
-            Vector2d[] positions2 = {new Vector2d(2,2), new Vector2d(3,4)};
-            SimulationEngine engine = new SimulationEngine(map, positions2, this, 600);
+            GrassField map = new GrassField(10,10,10);
+            SimulationEngine engine = new SimulationEngine(map,20,this);
+            this.myMap = map;
+            this.primaryStage = primaryStage;
+
+
             Button button = new Button("Start");
-            button.setPadding(new Insets(10, 50, 10 ,50));
+            button.setPadding(new Insets(20, 100, 20 ,100));
+            button.setStyle("-fx-font: 24 arial;");
             TextField text = new TextField("Enter directions");
-            text.setPadding(new Insets(10,10,10,10));
+            text.setPadding(new Insets(20,30,20,30));
+            text.setStyle("-fx-font: 24 arial;");
+            HBox hbox = new HBox(button);
 
-                HBox hbox = new HBox(text, button);
+            hbox.setAlignment(Pos.CENTER);
+            hbox.setSpacing(20);
 
-                hbox.setAlignment(Pos.CENTER);
-                hbox.setSpacing(10);
+            button.setOnAction(actionEvent -> init( engine, text.getText()));
+            Scene scene = new Scene(hbox, 400, 400);
 
-                button.setOnAction(actionEvent -> startGame(engine, text.getText()));
-                Scene scene = new Scene(hbox, 600, 600);
+            primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
+            primaryStage.show();
 
-                stage.setScene(scene);
-                stage.show();
 
-        } catch (IllegalArgumentException ex) {
-            System.out.println(ex);
+        } catch (IllegalArgumentException exception) {
+            // kod obsługi wyjątku
+            System.out.println(exception.getMessage());
 
         }
         catch (RuntimeException e){
             System.out.println(e.getMessage());
         }
+
     }
 }

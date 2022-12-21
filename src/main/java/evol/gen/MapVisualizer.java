@@ -74,6 +74,7 @@ public class MapVisualizer {
         if (this.map.isOccupied(currentPosition)) {
             Object object = this.map.objectAt(currentPosition);
             if (object != null) {
+                //result = object.toString();
                 result = object.toString();
             } else {
                 result = EMPTY_CELL;

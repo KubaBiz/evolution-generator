@@ -1,7 +1,6 @@
 package evol.gen.gui;
 
-import evol.gen.IMapElement;
-import javafx.geometry.HPos;
+import evol.gen.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -9,7 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.FontWeight;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -17,26 +18,32 @@ public class GuiElementBox {
     private Image image;
     private ImageView imageView;
     private Label label;
-    private VBox box = new VBox();
+    private VBox box = new VBox(-5);
 
     public VBox getBox(){
-        return box;
+        return this.box;
     }
 
     public GuiElementBox(IMapElement element) {
         try {
-            image = new Image(new FileInputStream(element.getImage()));
+            this.image = new Image(new FileInputStream(element.getLinkToImage()));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e + "nie znaleziono pliku");
+            throw new RuntimeException(e + "Nie znaleziono pliku ze zdjęciem");
         }
-        imageView = new ImageView(image);
-        imageView.setFitWidth(30);
-        imageView.setFitHeight(30);
-
-        if(element.toString().equals("*")){ label = new Label("Grass"); }
-        else{ label = new Label("A " + element.getPosition().toString()); }
-
-        box.getChildren().addAll((Node) imageView, label);
+        this.imageView = new ImageView(image);
+        this.imageView.setFitWidth(35);
+        this.imageView.setFitHeight(35);
+        if(element.toString().equals("*")){
+            this.label = new Label("Trawa");
+            label.setStyle("-fx-text-fill: rgba(0, 100, 0, 1);-fx-font-weight: bold;");
+        }
+        else{
+            Animal animal = (Animal) element;
+            this.label = new Label(""+animal.energy+"("+((GrassField)animal.myMap).animals.get(animal.getPosition()).size()+")");
+            label.setStyle("-fx-text-fill: rgba(128, 50, 0, 1);-fx-font-weight: bold;");
+        }
+        box.getChildren().addAll((Node) this.imageView, this.label);
         box.setAlignment(Pos.CENTER);
+        box.setPadding(new Insets(1, 0, 1, 4));
     }
 }
