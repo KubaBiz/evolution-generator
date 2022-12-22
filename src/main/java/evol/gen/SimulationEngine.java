@@ -11,6 +11,8 @@ public class SimulationEngine implements IEngine,Runnable {
     private int moveDelay = 300;
     private final boolean isAppOpening;
     private final boolean someMadness = false;
+
+    private final boolean isItDeathField = false;
     private App observer;
     public SimulationEngine(GrassField map,int initAnimals,int moveDelay) {
         this.myMap = map;
@@ -128,6 +130,12 @@ public class SimulationEngine implements IEngine,Runnable {
             System.out.println("Po wykonanych pracach, przed starzeniem sie:");
             System.out.println(this.myMap);
             this.myMap.aging();
+
+            //codziennie trzeba posadzić nową trawę
+            myMap.createEnoughGrasses(isItDeathField);
+
+            //jeszcze trzeba dodać umieranie zwierząt/stratę energii na koniec??
+
             counter++;
         }
         System.out.println("Ostateczny stan:");

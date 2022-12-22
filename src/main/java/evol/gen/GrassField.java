@@ -1,14 +1,25 @@
 package evol.gen;
 import java.util.*;
 
+import static java.lang.Math.random;
+
 public class GrassField extends AbstractWorldMap{
     int n;
+    int rownik;
+    private final int width;
+    private final int height;
 
     private HashMap<Vector2d,Grass> grasses = new HashMap<>();
+
+    private HashMap<Vector2d, Integer> deathfield = new HashMap<>();
     public GrassField(int width,int height,int n){
         super(new Vector2d(width,height));//nie wplynie na wielkosc mapy w klasie nadrzednej!
         this.n = n;
+        this.width = width;
+        this.height = height;
         this.createGrasses(this.n);
+        this.deathfield.put(new Vector2d(0,0), 0);
+        this.rownik= (int)(height/5) + 1;
     }
 
     public void createGrasses(int n){ //definiuje ile mozna stworzyc nowych trawek i randomowo je umeiszcza tam gdzie nie ma obiektow
@@ -16,6 +27,74 @@ public class GrassField extends AbstractWorldMap{
             Vector2d newVec = uniqPosVector(new Vector2d(topRight.x,topRight.y));
             grasses.put(newVec,new Grass(newVec));
 
+        }
+    }
+
+    public Vector2d getRandomVectorFromMap(){
+        int randomX = (int)(random() * (width));
+        int randomY = (int)(random() * (height));
+        return new Vector2d(randomX, randomY);
+    }
+
+    public Vector2d getRandomVectorFromEquator(){
+        int randomX = (int)(random() * (width));
+        int randomY = (int)(random() * (rownik)) + (int)((width-1)/2);
+        return new Vector2d(randomX, randomY);
+    }
+
+
+    // W App trzeba się upewnić że dostajemy ilość traw mniejszą bądź równą ilości miejsc na mapie
+    public void createEnoughGrasses(boolean isItDeathField){
+        if (!isItDeathField){
+            while (grasses.size()<n) {
+                int oneInFive = (int)(random()*(5));
+                if (oneInFive==0){
+                    while (true) {
+                        Vector2d zmienna = this.getRandomVectorFromMap();
+                        if (!(objectAt(zmienna) instanceof Grass)) {
+                            grasses.put(zmienna, new Grass(zmienna));
+                            break;
+                        }
+                    }
+                }
+                else {
+                    while (true) {
+                        Vector2d zmienna = this.getRandomVectorFromEquator();
+                        if (!(objectAt(zmienna) instanceof Grass)) {
+                            grasses.put(zmienna, new Grass(zmienna));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            while (grasses.size()<n) {
+                int oneInFive = (int)(random()*(5));
+                if (oneInFive==0){
+                    while (true) {
+                        Vector2d zmienna = this.getRandomVectorFromMap();
+                        if (!(objectAt(zmienna) instanceof Grass)) {
+                            grasses.put(zmienna, new Grass(zmienna));
+                            break;
+                        }
+                    }
+                }
+                else {
+                    while (true) {
+                        Vector2d zmienna = this.getRandomVectorFromMap();
+                        if (!deathfield.containsKey(zmienna)){
+                            deathfield.put(zmienna,0);
+                        }
+                        Collections.min(deathfield.values());
+                        if (!(objectAt(zmienna) instanceof Grass) && deathfield.get(zmienna) <= Collections.min(deathfield.values()))
+                        {
+                            grasses.put(zmienna, new Grass(zmienna));
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
