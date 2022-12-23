@@ -38,8 +38,19 @@ public class GrassField extends AbstractWorldMap{
 
     public Vector2d getRandomVectorFromEquator(){
         int randomX = (int)(random() * (width));
-        int randomY = (int)(random() * (rownik)) + (int)((width-1)/2);
+        int randomY = (int)(random() * (rownik)) + (int)(width/2) -1;
         return new Vector2d(randomX, randomY);
+    }
+
+    private boolean canplaceGrass(){
+        for (int i=0; i<width; i++){
+            for (int j=0; j<=height; j++){
+                if (objectAt(new Vector2d(i,j))==null){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -47,11 +58,12 @@ public class GrassField extends AbstractWorldMap{
     public void createEnoughGrasses(boolean isItDeathField){
         if (!isItDeathField){
             while (grasses.size()<n) {
+                if (!canplaceGrass()) { break; }
                 int oneInFive = (int)(random()*(5));
                 if (oneInFive==0){
                     while (true) {
                         Vector2d zmienna = this.getRandomVectorFromMap();
-                        if (!(objectAt(zmienna) instanceof Grass)) {
+                        if (grassAt(zmienna) == null) {
                             grasses.put(zmienna, new Grass(zmienna));
                             break;
                         }
@@ -60,7 +72,7 @@ public class GrassField extends AbstractWorldMap{
                 else {
                     while (true) {
                         Vector2d zmienna = this.getRandomVectorFromEquator();
-                        if (!(objectAt(zmienna) instanceof Grass)) {
+                        if (grassAt(zmienna) == null) {
                             grasses.put(zmienna, new Grass(zmienna));
                             break;
                         }
@@ -70,11 +82,12 @@ public class GrassField extends AbstractWorldMap{
         }
         else{
             while (grasses.size()<n) {
+                if (!canplaceGrass()) { break; }
                 int oneInFive = (int)(random()*(5));
                 if (oneInFive==0){
                     while (true) {
                         Vector2d zmienna = this.getRandomVectorFromMap();
-                        if (!(objectAt(zmienna) instanceof Grass)) {
+                        if (grassAt(zmienna) == null) {
                             grasses.put(zmienna, new Grass(zmienna));
                             break;
                         }
@@ -86,16 +99,34 @@ public class GrassField extends AbstractWorldMap{
                         if (!deathfield.containsKey(zmienna)){
                             deathfield.put(zmienna,0);
                         }
-                        Collections.min(deathfield.values());
-                        if (!(objectAt(zmienna) instanceof Grass) && deathfield.get(zmienna) <= Collections.min(deathfield.values()))
+
+                        if (grassAt(zmienna) == null && deathfield.get(zmienna) <= Collections.min(deathfield.values()))
                         {
                             grasses.put(zmienna, new Grass(zmienna));
                             break;
+                        }
+                        else{
+                            Vector2d pos = null;
+                            for (Vector2d dead : deathfield.keySet()) {
+                                int minim = Collections.max(deathfield.values());
+                                if (deathfield.get(dead) <= minim && grassAt(dead) == null){
+                                    minim = deathfield.get(dead);
+                                    pos = dead;
+                                }
+                            }
+                            if (pos != null) {
+                                grasses.put(pos, new Grass(pos));
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    public Grass grassAt(Vector2d position){
+        return grasses.get(position);
     }
 
 

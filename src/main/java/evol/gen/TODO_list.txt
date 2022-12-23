@@ -1,0 +1,84 @@
+Dodałem TODO_list żeby łatwiej sprawdzać postęp co jest zrobione i nie szukać tego w kodzie
+
+gui
+    App - jakie argumenty zbieramy od użytkownika i przekazujemy dalej
+    GuiElementBox - jak chcemy rysować mapę
+
+RestrictedAnimalComparator - jak wszystko jest równe to może jakiś random bo i tak mamy zdecydować chyba które jest 'lepsze' od drugiego
+
+SimulationEngine - konstruktor żeby przyjmował parametry z App
+dodawanie martwych zwierząt do deathfield (potrzebne przy rośnięciu trawy)
+nie ma rośnięcia trawy na samym początku ( po prostu dodać CreateUniqueGrasses na początku symulacji/w konstruktorze? )
+konstruktor musi generować randomowe unikalne pozycje dla x zwierząt (x bierzemy z App) i tworzyć je na mapie
+
+//jak jest zrobione to odznacz czy coś
+
+Symulacja:
+usunięcie martwych zwierząt z mapy,
+skręt i przemieszczenie każdego zwierzęcia,
+konsumpcja roślin na których pola weszły zwierzęta,
+rozmnażanie się najedzonych zwierząt znajdujących się na tym samym polu,
+wzrastanie nowych roślin na wybranych polach mapy.
+
+Parametry: (ma to być zbierane w App w okienku startowym)
+wysokość i szerokość mapy,
+wariant mapy (wyjaśnione w sekcji poniżej),
+startowa liczba roślin,
+energia zapewniana przez zjedzenie jednej rośliny,
+liczba roślin wyrastająca każdego dnia,
+wariant wzrostu roślin (wyjaśnione w sekcji poniżej),
+startowa liczba zwierzaków,
+startowa energia zwierzaków,
+energia konieczna, by uznać zwierzaka za najedzonego (i gotowego do rozmnażania),
+energia rodziców zużywana by stworzyć potomka,
+minimalna i maksymalna liczba mutacji u potomków (może być równa 0),
+wariant mutacji (wyjaśnione w sekcji poniżej),
+długość genomu zwierzaków,
+wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej),
+
+Warianty:
+kula ziemska/piekielny portal
+zalesione równiki/toksyczne trupki -- ZROBIONE, NA SPOTKANIU USTALIĆ CZY COŚ ZMIENIĆ
+pełna losowość/lekka korekta
+pełna predestynacja/nieco szaleństwa
+
+Wymagania dla aplikacji:
+
+Jej głównym zadaniem jest umożliwienie uruchamiania symulacji o wybranych konfiguracjach.
+Powinna umożliwić wybranie jednej z uprzednio przygotowanych gotowych konfiguracji.
+Dostępne konfiguracje mają formę znajdujących się w odpowiednim folderze na dysku plików konfiguracyjnych
+(plik może zawierać po prostu pary klucz + wartość, po jednej na linijkę).
+Istnieje możliwość wczytania alternatywnej, sporządzonej przez użytkownika konfiguracji.
+
+Uruchomienie symulacji powinno skutkować pojawieniem się nowego okna obsługującego daną symulację.
+Jednocześnie uruchomionych może być wiele symulacji, każda w swoim oknie, każda na osobnej mapie.
+
+Sekcja symulacji ma wyświetlać animację pokazującą pozycje zwierząt, ich energię w dowolnej formie
+(np. koloru lub paska zdrowia) oraz pozycje roślin - i ich zmiany.
+
+Program musi umożliwiać zatrzymywanie oraz wznawianie animacji w dowolnym momencie (niezależnie dla każdej mapy - patrz niżej)
+
+Program ma pozwalać na śledzenie następujących statystyk dla aktualnej sytuacji w symulacji:
+liczby wszystkich zwierząt,
+liczby wszystkich roślin,
+liczby wolnych pól,
+najpopularniejszych genotypów,
+średniego poziomu energii dla żyjących zwierząt,
+średniej długości życia zwierząt dla martwych zwierząt (wartość uwzględnia wszystkie nieżyjące zwierzęta - od początku symulacji)
+
+Jeżeli zdecydowano się na to w momencie uruchamiania symulacji, to jej statystyki powinny być zapisywane (każdego dnia) do pliku CSV.
+Plik ten powinnien być "otwieralny" przez dowolny rozujmiejący ten format program (np. MS Excel).
+
+Po zatrzymaniu programu można oznaczyć jedno zwierzę jako wybrane do śledzenia.
+Od tego momentu (do zatrzymania śledzenia) UI powinien przekazywać nam informacje o jego statusie i historii:
+jaki ma genom,
+która jego część jest aktywowana,
+ile ma energii,
+ile zjadł roślin,
+ile posiada dzieci,
+ile dni już żyje (jeżeli żyje),
+którego dnia zmarło (jeżeli żywot już skończyło).
+
+Po zatrzymaniu programu powinno być też możliwe pokazanie,
+które ze zwierząt mają dominujący (najpopularniejszy) genotyp (np. poprzez wyróżnienie ich wizualnie)
+
