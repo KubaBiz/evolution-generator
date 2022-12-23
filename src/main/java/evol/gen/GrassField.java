@@ -13,7 +13,7 @@ public class GrassField extends AbstractWorldMap{
 
     private HashMap<Vector2d, Integer> deathfield = new HashMap<>();
     public GrassField(int width,int height,int n){
-        super(new Vector2d(width,height));//nie wplynie na wielkosc mapy w klasie nadrzednej!
+        super(new Vector2d(width,height));
         this.n = n;
         this.width = width;
         this.height = height;
@@ -26,7 +26,6 @@ public class GrassField extends AbstractWorldMap{
         for(int i = 0; i < n; i++){
             Vector2d newVec = uniqPosVector(new Vector2d(topRight.x,topRight.y));
             grasses.put(newVec,new Grass(newVec));
-
         }
     }
 
@@ -128,7 +127,6 @@ public class GrassField extends AbstractWorldMap{
     public Grass grassAt(Vector2d position){
         return grasses.get(position);
     }
-
 
     public boolean isOccupied(Vector2d position) {
         if(super.isOccupied(position))return true;//jesli tam jest zwierzę to zwroc true

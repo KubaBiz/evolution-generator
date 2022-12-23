@@ -5,19 +5,25 @@ gui
     GuiElementBox - jak chcemy rysować mapę
 
 RestrictedAnimalComparator - jak wszystko jest równe to może jakiś random bo i tak mamy zdecydować chyba które jest 'lepsze' od drugiego
+- jest to potrzebne do rozmnażania. Jeśli zwierzak ma parametry bardzo dobre, ale ma za malo energii, to trzeba go
+inaczej porownywać z innymi zwierzakami.
+
+
 
 SimulationEngine - konstruktor żeby przyjmował parametry z App
 dodawanie martwych zwierząt do deathfield (potrzebne przy rośnięciu trawy)
 nie ma rośnięcia trawy na samym początku ( po prostu dodać CreateUniqueGrasses na początku symulacji/w konstruktorze? )
-konstruktor musi generować randomowe unikalne pozycje dla x zwierząt (x bierzemy z App) i tworzyć je na mapie
+-- jest rosniecie traw na samym poczatku. W konstruktorze juz to jest dodane.
 
+konstruktor musi generować randomowe unikalne pozycje dla x zwierząt (x bierzemy z App) i tworzyć je na mapie
+- jest zrobione to juz. Zwierzaki są generowane randomowo.
 //jak jest zrobione to odznacz czy coś
 
 Symulacja:
-usunięcie martwych zwierząt z mapy,
-skręt i przemieszczenie każdego zwierzęcia,
-konsumpcja roślin na których pola weszły zwierzęta,
-rozmnażanie się najedzonych zwierząt znajdujących się na tym samym polu,
+usunięcie martwych zwierząt z mapy, - jest to funkcja removeCorpses()
+skręt i przemieszczenie każdego zwierzęcia, - gotowe
+konsumpcja roślin na których pola weszły zwierzęta, - zrobione
+rozmnażanie się najedzonych zwierząt znajdujących się na tym samym polu, - zrobione
 wzrastanie nowych roślin na wybranych polach mapy.
 
 Parametry: (ma to być zbierane w App w okienku startowym)
@@ -37,10 +43,10 @@ długość genomu zwierzaków,
 wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej),
 
 Warianty:
-kula ziemska/piekielny portal
+kula ziemska/piekielny portal - zrobione
 zalesione równiki/toksyczne trupki -- ZROBIONE, NA SPOTKANIU USTALIĆ CZY COŚ ZMIENIĆ
-pełna losowość/lekka korekta
-pełna predestynacja/nieco szaleństwa
+pełna losowość/lekka korekta - zrobione
+pełna predestynacja/nieco szaleństwa - zrobione
 
 Wymagania dla aplikacji:
 

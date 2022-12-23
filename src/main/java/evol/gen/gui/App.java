@@ -8,12 +8,15 @@ import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.util.concurrent.CountDownLatch;
 
 public class App extends Application{
 
@@ -22,6 +25,11 @@ public class App extends Application{
     private final int width = 45;
     private final int height = 45;
     public Stage primaryStage;
+
+
+    private final Object lock = new Object();
+
+
 
 
     private VBox drawObject(Vector2d position) {
@@ -40,7 +48,7 @@ public class App extends Application{
         }
         return result;
     }
-    private void drawMap(){
+    private void drawMap(int statusOfMap){
         grid.setGridLinesVisible(true);
         //grid.setStyle("-fx-margin: auto;");
         grid.setStyle("-fx-padding: 100 100 100 100;");
@@ -81,8 +89,36 @@ public class App extends Application{
         GridPane.setHalignment(label, HPos.CENTER);
 
         //tworzenie widku w okienku
+        HBox hbox = new HBox();
 
-        Scene scene = new Scene(grid, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
+        //hbox.setAlignment(Pos.CENTER);
+        hbox.setSpacing(20);
+        if(statusOfMap == 0){
+            label = new Label("usuwanie zwlok");
+            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(140, 0, 0, 1);");
+        }else if(statusOfMap == 1){
+            label = new Label("przemieszczanie sie");
+            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(242, 133, 0, 1);");
+        }else if(statusOfMap == 2){
+            label = new Label("zjadanie traw");
+            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(137, 242, 0, 1);");
+        }else if(statusOfMap == 3){
+            label = new Label("rozmnazanie sie!");
+            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(234, 0, 242, 1);");
+        }else if(statusOfMap == 4){
+            label = new Label("koniec dnia");
+            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(40, 0, 242, 1);");
+        }else if(statusOfMap == 5){
+            label = new Label("nowe roslinki");
+            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        }
+
+        VBox vbox = new VBox();
+        Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
+        labelgrass.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        vbox.getChildren().addAll((Node) label,labelgrass);
+        hbox.getChildren().addAll((Node) grid, vbox);
+        Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         //primaryStage.show();
@@ -104,11 +140,11 @@ public class App extends Application{
 
     }
 
-    public void updateMap(){
+    public void updateMap(int statusOfMap){
         Platform.runLater(()->{
             grid.getChildren().clear();
             this.grid = new GridPane();
-            drawMap();
+            drawMap(statusOfMap);
         });
     }
 
@@ -121,15 +157,11 @@ public class App extends Application{
 
     public void start(Stage primaryStage) {
         try {
-
             threadExceptionHandler();
-
             GrassField map = new GrassField(10,10,10);
             SimulationEngine engine = new SimulationEngine(map,20,this);
             this.myMap = map;
             this.primaryStage = primaryStage;
-
-
             Button button = new Button("Start");
             button.setPadding(new Insets(20, 100, 20 ,100));
             button.setStyle("-fx-font: 24 arial;");
@@ -157,6 +189,5 @@ public class App extends Application{
         catch (RuntimeException e){
             System.out.println(e.getMessage());
         }
-
     }
 }
