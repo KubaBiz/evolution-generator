@@ -18,6 +18,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     protected Random randomizer = ThreadLocalRandom.current();
 
+    protected HashMap<Vector2d, Integer> deathfield = new HashMap<>();
     //limited gen:
     public final int genLimit = 10;
 
@@ -27,6 +28,10 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public final int initEnergy = 50;
     public final int takenEnergyEachDay = 25;
     public final boolean globe = true;
+
+    public final int newGrasses = 10;
+
+    public final boolean isItDeathField = false;
 
     public AbstractWorldMap(Vector2d topRight){
         if(topRight.x > 0 && topRight.y > 0) this.topRight = topRight;
@@ -270,8 +275,18 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                 animal.addEnergy(-takenEnergyEachDay);
                 if(animal.energy <= 0){
                     animal.isDead = true;
+                    this.deathFieldIncrementer(animal);
                 }
             }
+        }
+    }
+
+    public void deathFieldIncrementer(Animal animal){
+        if(this.deathfield.containsKey(animal.getPosition())){
+            this.deathfield.put(animal.getPosition(),this.deathfield.get(animal.getPosition())+1);
+        }
+        else{
+            this.deathfield.put(animal.getPosition(),1);
         }
     }
 

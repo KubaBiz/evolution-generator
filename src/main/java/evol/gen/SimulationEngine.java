@@ -64,13 +64,17 @@ public class SimulationEngine implements IEngine,Runnable {
         this.observer.updateMap(0);
         int maxDay = this.myMap.genLimit;
         int counter = 0;
-        while(counter < maxDay){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
-            System.out.println("przed usuwaniem zwlok: ");
-            System.out.println(this.myMap);
-            this.observer.updateMap(0);
-            this.sleepNow(2000);
-            this.myMap.removingCorpse();
-            this.sleepNow(2000);
+        boolean start = true;
+        while(this.myMap.animals.size() > 0 && counter < maxDay){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
+            if(!start) {
+                System.out.println("przed usuwaniem zwlok: ");
+                System.out.println(this.myMap);
+                this.observer.updateMap(0);
+                this.sleepNow(2000);
+                this.myMap.removingCorpse();
+                this.sleepNow(2000);
+            }
+            start = false;
             this.observer.updateMap(1);
             System.out.println("po usunieciu zwlok: ");
             System.out.println(this.myMap);
@@ -109,12 +113,15 @@ public class SimulationEngine implements IEngine,Runnable {
             this.sleepNow(2000);
             this.observer.updateMap(3);
             this.sleepNow(2000);
+            int oldNumberOfAnimals = this.myMap.animals.size();
             this.myMap.reproducingTime();
+            counter = this.clearCounter(oldNumberOfAnimals,counter); // jesli pojawi sie nowe zwierze na mapie to musi wykonac caly swoj genom, wiec resetujemy counter;
+            // inne zwierzaki będą powtarzać swoje sekwencje.
             this.observer.updateMap(3);
             this.sleepNow(2000);
             this.observer.updateMap(5);
             this.sleepNow(2000);
-            this.myMap.createEnoughGrasses(false);
+            this.myMap.createProperNumberOfGrass();
             this.observer.updateMap(5);
             this.sleepNow(2000);
             this.observer.updateMap(4);
@@ -146,6 +153,13 @@ public class SimulationEngine implements IEngine,Runnable {
         }catch (InterruptedException e) {
             throw new RuntimeException(e + "Przerwano symulację");
         }
+    }
+
+    public int clearCounter(int oldNumberOfAnimals,int counter){
+        if(this.myMap.animals.size() > oldNumberOfAnimals){
+            counter = 0;
+        }
+        return counter;
     }
 
 }

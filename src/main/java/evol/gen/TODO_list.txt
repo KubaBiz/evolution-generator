@@ -8,10 +8,15 @@ RestrictedAnimalComparator - jak wszystko jest równe to może jakiś random bo 
 - jest to potrzebne do rozmnażania. Jeśli zwierzak ma parametry bardzo dobre, ale ma za malo energii, to trzeba go
 inaczej porownywać z innymi zwierzakami.
 
+--- uwaga trzeba naprawić funkcję createEnoughGrasses() - zawiesza sie program gdy mamy troche roslin. Dodalem funkcję, która
+tworzy tyle roslinek ile trzeba kazdego dnia - > createProperNumberOfGrass().
+
+
 
 
 SimulationEngine - konstruktor żeby przyjmował parametry z App
-dodawanie martwych zwierząt do deathfield (potrzebne przy rośnięciu trawy)
+dodawanie martwych zwierząt do deathfield (potrzebne przy rośnięciu trawy) - dodane jest juz , funkcja aging() odejmuje energie, zwieksza wiek zwierząt i gdy energia jest mniejsza to inkrementuje daną pozycje w deathfield (osobna funkcja na to deathFieldIncrementer czy jakos tak)
+
 nie ma rośnięcia trawy na samym początku ( po prostu dodać CreateUniqueGrasses na początku symulacji/w konstruktorze? )
 -- jest rosniecie traw na samym poczatku. W konstruktorze juz to jest dodane.
 
@@ -44,7 +49,7 @@ wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej),
 
 Warianty:
 kula ziemska/piekielny portal - zrobione
-zalesione równiki/toksyczne trupki -- ZROBIONE, NA SPOTKANIU USTALIĆ CZY COŚ ZMIENIĆ
+zalesione równiki/toksyczne trupki -- ZROBIONE, NA SPOTKANIU USTALIĆ CZY COŚ ZMIENIĆ (jak juz wyzej mowilem, funkcja createEnoughGrasses sie zawiesza)
 pełna losowość/lekka korekta - zrobione
 pełna predestynacja/nieco szaleństwa - zrobione
 

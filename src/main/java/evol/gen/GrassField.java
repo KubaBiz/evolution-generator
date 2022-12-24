@@ -11,9 +11,9 @@ public class GrassField extends AbstractWorldMap{
 
     private HashMap<Vector2d,Grass> grasses = new HashMap<>();
 
-    private HashMap<Vector2d, Integer> deathfield = new HashMap<>();
+
     public GrassField(int width,int height,int n){
-        super(new Vector2d(width,height));
+        super(new Vector2d(width-1,height-1));
         this.n = n;
         this.width = width;
         this.height = height;
@@ -52,12 +52,15 @@ public class GrassField extends AbstractWorldMap{
         return false;
     }
 
+    public boolean canMakeNewGrass(){
+        return this.grasses.size() < (this.topRight.y)*(this.topRight.x);
+    }
+
 
     // W App trzeba się upewnić że dostajemy ilość traw mniejszą bądź równą ilości miejsc na mapie
     public void createEnoughGrasses(boolean isItDeathField){
         if (!isItDeathField){
-            while (grasses.size()<n) {
-                if (!canplaceGrass()) { break; }
+                if (!canplaceGrass()) { return;}
                 int oneInFive = (int)(random()*(5));
                 if (oneInFive==0){
                     while (true) {
@@ -77,11 +80,10 @@ public class GrassField extends AbstractWorldMap{
                         }
                     }
                 }
-            }
+
         }
         else{
-            while (grasses.size()<n) {
-                if (!canplaceGrass()) { break; }
+            if (!canplaceGrass()) { return;}
                 int oneInFive = (int)(random()*(5));
                 if (oneInFive==0){
                     while (true) {
@@ -120,7 +122,11 @@ public class GrassField extends AbstractWorldMap{
                         }
                     }
                 }
-            }
+        }
+    }
+    public void createProperNumberOfGrass(){
+        for(int i =0; i < this.newGrasses; i++){
+            this.createEnoughGrasses(this.isItDeathField);
         }
     }
 
