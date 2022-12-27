@@ -24,7 +24,7 @@ public final int id;
     private MapDirection orientation =  MapDirection.NORTH;
     //w konstruktorach przypisujemy zwierze do danej mapy, ale nie umieszczamy zwierzecia na tej mapie!!
 
-    public Animal(IWorldMap map, Vector2d initialPosition){
+    public Animal(GrassField map, Vector2d initialPosition){
             super(initialPosition);
             this.myMap = map;
             this.initialGen();
@@ -32,6 +32,7 @@ public final int id;
             this.initActivatedGen();
             this.energy = ((GrassField) this.myMap).initEnergy;
             this.id = ((GrassField) this.myMap).addId();
+            this.fullRandomness = this.myMap.setFullRandomness();
 
     }
     public String createNewGen(Animal Animal1,Animal Animal2){
@@ -57,6 +58,7 @@ public final int id;
         this.initActivatedGen();
         this.energy = ((GrassField) this.myMap).initEnergy;
         this.id = ((GrassField) this.myMap).addId();
+        this.fullRandomness = this.myMap.setFullRandomness();
     }
 
     public String parentRandomGen(double probability,String sequence){ // O(n)

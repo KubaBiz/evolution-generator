@@ -48,4 +48,6 @@ public interface IWorldMap {
     void goSomewhereElse(Animal animal,Vector2d vector);
 
     ArrayList<Animal> moveAllAnimalsToArrayList();
+
+    int setFullRandomness();
 }

@@ -10,7 +10,7 @@ public class SimulationEngine implements IEngine,Runnable {
     //private App observer;
     private int moveDelay = 600;
     private final boolean isAppOpening;
-    private final boolean someMadness = false;
+    public boolean someMadness = false;
     private App observer;
 
 
@@ -101,7 +101,7 @@ public class SimulationEngine implements IEngine,Runnable {
 
                 }
                 this.observer.updateMap(1);
-                this.sleepNow(700);
+                this.sleepNow(500);
 
             });
 

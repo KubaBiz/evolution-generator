@@ -30,7 +30,7 @@ public class App extends Application{
     private final Object lock = new Object();
 
     public Thread threadEngine;
-
+    public SimulationEngine engine;
 
     private VBox drawObject(Vector2d position) {
         VBox result = null;
@@ -165,11 +165,62 @@ public class App extends Application{
         });
     }
 
-    private void init(String text){
-        SimulationEngine engine = new SimulationEngine(myMap,Integer.parseInt(text),this);
-        this.threadEngine = new Thread(engine);
-        threadEngine.start();
+    private void init(String nrOfAnimals, String genLimit, String eatingEnergy,
+                      String minEnergyToReproduce, String initEnergy,
+                      String takenEnergyEachDay, String globe, String newGrasses, String isItDeathField,
+                      String width, String height, String n,
+                      String someMadness, String fullRandomness) {
+        int widthInt = Integer.parseInt(width);
+        int heightInt = Integer.parseInt(height);
+        int nInt = Integer.parseInt(n);
+        GrassField map = new GrassField(widthInt, heightInt, nInt);
+        this.myMap = map;
+        this.myMap.genLimit = Integer.parseInt(genLimit);
+        this.myMap.eatingEnergy = Integer.parseInt(eatingEnergy);
+        this.myMap.minEnergyToReproduce = Integer.parseInt(minEnergyToReproduce);
+        this.myMap.initEnergy = Integer.parseInt(initEnergy);
+        this.myMap.takenEnergyEachDay = Integer.parseInt(takenEnergyEachDay);
+        this.myMap.globe = Boolean.parseBoolean(globe);
+        this.myMap.newGrasses = Integer.parseInt(newGrasses);
+        this.myMap.isItDeathField = Boolean.parseBoolean(isItDeathField);
+        this.myMap.fullRandomness = Boolean.parseBoolean(fullRandomness);
 
+        this.engine = new SimulationEngine(myMap, Integer.parseInt(nrOfAnimals), this);
+        this.engine.someMadness = Boolean.parseBoolean(someMadness);
+        this.threadEngine = new Thread(engine);
+
+        threadEngine.start();
+        //abstractWorldMap
+//        public final int genLimit = 10;
+//        public final int eatingEnergy = 100;
+//        public final int minEnergyToReproduce = 50;
+//        public final int initEnergy = 50;
+//        public final int takenEnergyEachDay = 25;
+//        public final boolean globe = true;
+//        public final int newGrasses = 40;
+//        public final boolean isItDeathField = false;
+//     GrassField
+          //public final int width;
+          //public final int height;
+          //int n;
+      // Simulation Engine
+         //public final boolean someMadness = false;
+      //animal:
+        //public int fullRandomness = 0;
+    }
+
+    public HBox createHboxParameters(Label label,TextField text){
+
+        //TextField text = new TextField("20");
+        text.setPadding(new Insets(10,20,10,20));
+        text.setStyle("-fx-font: 15 arial;");
+        text.setMaxWidth(250);
+        //Label label = new Label("Starting number of animals");
+        label.setStyle("-fx-font: 15 arial;-fx-text-fill;");
+        HBox hbox = new HBox(label,text);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setSpacing(20);
+        return hbox;
     }
 
     public void start(Stage primaryStage) {
@@ -177,31 +228,90 @@ public class App extends Application{
             threadExceptionHandler();
 
 
-            GrassField map = new GrassField(10,10,10);
-            this.myMap = map;
-
-
             this.primaryStage = primaryStage;
             Button button = new Button("Start");
             button.setPadding(new Insets(15, 50, 15 ,50));
             button.setStyle("-fx-font: 24 arial;");
-            TextField text = new TextField("20");
-            text.setPadding(new Insets(15,30,15,30));
-            text.setStyle("-fx-font: 24 arial;");
-            text.setMaxWidth(250);
-            Label label = new Label("Starting number of animals");
-            label.setStyle("-fx-font: 24 arial;-fx-text-fill;");
-            HBox hbox = new HBox(label,text);
-            hbox.setAlignment(Pos.CENTER);
-            hbox.setSpacing(20);
-            VBox vbox = new VBox(button, hbox);
 
-            vbox.setAlignment(Pos.CENTER);
-            vbox.setSpacing(20);
+            TextField nrOfAnimals = new TextField("20");
+            Label label_nrOfAnimals = new Label("Starting number of animals");
+            HBox nrOfAnimalsHBox = createHboxParameters(label_nrOfAnimals, nrOfAnimals);
+
+            TextField genLimitField = new TextField("10");
+            Label genLimitLabel = new Label("Generation limit");
+            HBox genLimitHBox = createHboxParameters(genLimitLabel, genLimitField);
+
+            TextField eatingEnergyField = new TextField("100");
+            Label eatingEnergyLabel = new Label("Eating energy");
+            HBox eatingEnergyHBox = createHboxParameters(eatingEnergyLabel, eatingEnergyField);
+
+            TextField minEnergyToReproduceField = new TextField("50");
+            Label minEnergyToReproduceLabel = new Label("Minimum energy to reproduce");
+            HBox minEnergyToReproduceHBox = createHboxParameters(minEnergyToReproduceLabel, minEnergyToReproduceField);
+
+            TextField initEnergyField = new TextField("50");
+            Label initEnergyLabel = new Label("Initial energy");
+            HBox initEnergyHBox = createHboxParameters(initEnergyLabel, initEnergyField);
 
 
-            button.setOnAction(actionEvent -> init(text.getText()));
-            Scene scene = new Scene(vbox, 400, 400);
+            TextField takenEnergyEachDayField = new TextField("25");
+            Label takenEnergyEachDayLabel = new Label("Taken energy each day");
+            HBox takenEnergyEachDayHBox = createHboxParameters(takenEnergyEachDayLabel, takenEnergyEachDayField);
+
+            TextField globeField = new TextField("true");
+            Label globeLabel = new Label("Globe");
+            HBox globeHBox = createHboxParameters(globeLabel, globeField);
+
+            TextField newGrassesField = new TextField("40");
+            Label newGrassesLabel = new Label("New grasses");
+            HBox newGrassesHBox = createHboxParameters(newGrassesLabel, newGrassesField);
+
+            TextField isItDeathFieldField = new TextField("false");
+            Label isItDeathFieldLabel = new Label("Is it death field?");
+            HBox isItDeathFieldHBox = createHboxParameters(isItDeathFieldLabel, isItDeathFieldField);
+
+
+            TextField widthField = new TextField("10");
+            Label widthLabel = new Label("Width");
+            HBox widthHBox = createHboxParameters(widthLabel, widthField);
+
+            TextField heightField = new TextField("10");
+            Label heightLabel = new Label("Height");
+            HBox heightHBox = createHboxParameters(heightLabel, heightField);
+
+            TextField nField = new TextField("10");
+            Label nLabel = new Label("Initial grasses");
+            HBox nHBox = createHboxParameters(nLabel, nField);
+
+            TextField someMadnessField = new TextField("false");
+            Label someMadnessLabel = new Label("Some madness");
+            HBox someMadnessHBox = createHboxParameters(someMadnessLabel, someMadnessField);
+
+            TextField fullRandomnessField = new TextField("false");
+            Label fullRandomnessLabel = new Label("Full randomness");
+            HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, fullRandomnessField);
+
+
+            VBox vbox0 = new VBox(button, eatingEnergyHBox, minEnergyToReproduceHBox, initEnergyHBox, takenEnergyEachDayHBox);
+            vbox0.setAlignment(Pos.CENTER);
+            vbox0.setSpacing(20);
+
+            VBox vbox1 = new VBox(nrOfAnimalsHBox, genLimitHBox,globeHBox, newGrassesHBox, isItDeathFieldHBox );
+            vbox1.setAlignment(Pos.CENTER);
+            vbox1.setSpacing(20);
+
+            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, someMadnessHBox, fullRandomnessHBox);
+            vbox2.setAlignment(Pos.CENTER);
+            vbox2.setSpacing(20);
+
+
+            HBox mainHbox = new HBox(vbox1,vbox0,vbox2);
+            mainHbox.setAlignment(Pos.CENTER);
+            mainHbox.setSpacing(20);
+
+
+            button.setOnAction(actionEvent -> init(nrOfAnimals.getText(), genLimitField.getText(), eatingEnergyField.getText(), minEnergyToReproduceField.getText(), initEnergyField.getText(), takenEnergyEachDayField.getText(), globeField.getText(), newGrassesField.getText(), isItDeathFieldField.getText(),widthField.getText(), heightField.getText(), nField.getText(), someMadnessField.getText(), fullRandomnessField.getText()));
+            Scene scene = new Scene(mainHbox, 400, 400);
 
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);

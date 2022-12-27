@@ -4,10 +4,10 @@ import java.util.*;
 import static java.lang.Math.random;
 
 public class GrassField extends AbstractWorldMap{
-    int n;
+    public int n;
     int rownik;
-    private final int width;
-    private final int height;
+    public final int width;
+    public final int height;
 
     private HashMap<Vector2d,Grass> grasses = new HashMap<>();
 
