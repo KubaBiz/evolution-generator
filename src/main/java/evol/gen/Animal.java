@@ -81,8 +81,7 @@ public final int id;
     public void initialGen(){
         int length = ((GrassField)this.myMap).genLimit; // desired length of the string
         StringBuilder sb = new StringBuilder();
-        long seed = System.currentTimeMillis(); // Use the current time as the seed
-        Random rand = new Random(seed);
+
 
         for (int i = 0; i < length; i++) {
             int randomInt = randomizer.nextInt(8); // generate a random number between 0 and 7
@@ -95,9 +94,6 @@ public final int id;
         HashMap<Integer, Character> selectedChars = new HashMap<>(); //(pozycja, nowy znak)
 
         StringBuilder newGen = new StringBuilder();
-
-        long seed = System.currentTimeMillis(); // Use the current time as the seed
-        Random rand = new Random(seed);
 
         int quantity = randomizer.nextInt(gen.length());
         for(int i =0; i < quantity; i++){
@@ -145,16 +141,13 @@ public final int id;
     }
 
     public void initDirection(){
-        long seed = System.currentTimeMillis(); // Use the current time as the seed
-        Random rand = new Random(seed);
+         // Use the current time as the seed
         MapDirection[] arr = MapDirection.values();
-        int index = rand.nextInt(arr.length);
+        int index = randomizer.nextInt(arr.length);
         this.orientation = arr[index];
 
     }
     public void initActivatedGen(){
-        long seed = System.currentTimeMillis(); // Use the current time as the seed
-        Random rand = new Random(seed);
         this.activatedGen = randomizer.nextInt(this.gen.length());
     }
 
@@ -173,8 +166,7 @@ public final int id;
     public void nextActivatedGen(boolean someMadness){
         if(!someMadness) this.activatedGen = (this.activatedGen + 1) %this.gen.length();
         else{
-            long seed = System.currentTimeMillis(); // Use the current time as the seed
-            Random rand = new Random(seed);
+
             int scope = randomizer.nextInt(10);
             if(scope < 2){
                 int newActivated = randomizer.nextInt(this.gen.length()-1)+1;  //number from 1 to this.gen.length-1

@@ -29,7 +29,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public final int takenEnergyEachDay = 25;
     public final boolean globe = true;
 
-    public final int newGrasses = 10;
+    public final int newGrasses = 40;
 
     public final boolean isItDeathField = false;
 
@@ -305,6 +305,15 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             }
         }
 
+    }
+
+    public int animalQuantity(){
+        int number = 0;
+        for (Map.Entry<Vector2d, PriorityQueue<Animal>> entry : animals.entrySet()) {
+            PriorityQueue<Animal> queue = entry.getValue();
+            number += queue.size();
+        }
+        return number;
     }
 
 

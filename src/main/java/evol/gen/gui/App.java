@@ -29,7 +29,7 @@ public class App extends Application{
 
     private final Object lock = new Object();
 
-
+    public Thread threadEngine;
 
 
     private VBox drawObject(Vector2d position) {
@@ -116,9 +116,24 @@ public class App extends Application{
         VBox vbox = new VBox();
         Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
         labelgrass.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
-        Label labelanimals = new Label("Ilosc zwierzatek: ;(");
+        Label labelanimals = new Label("Ilosc zwierzatek: "+this.myMap.animalQuantity());
         labelanimals.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
-        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals);
+
+        //dziala ale jak sam widzisz, są warningi, zeby suspendu i resuma nie uzywac raczej w javie bo niebezpieczne.
+        // jak znajdziesz lepsze wyjscie czy cos to dawaj znac, tez bede szukał.
+        Button newBtn = new Button("stop");
+        newBtn.setPadding(new Insets(5, 20, 5 ,20));
+        newBtn.setStyle("-fx-font: 18 arial;");
+        newBtn.setOnAction(ac->{
+            this.threadEngine.suspend();
+            newBtn.setText("start");
+            newBtn.setOnAction(ac2->{
+                this.threadEngine.resume();
+            });
+        });
+
+
+        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,newBtn);
         hbox.getChildren().addAll((Node) grid, vbox);
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
         primaryStage.setScene(scene);
@@ -152,7 +167,7 @@ public class App extends Application{
 
     private void init(String text){
         SimulationEngine engine = new SimulationEngine(myMap,Integer.parseInt(text),this);
-        Thread threadEngine = new Thread(engine);
+        this.threadEngine = new Thread(engine);
         threadEngine.start();
 
     }
