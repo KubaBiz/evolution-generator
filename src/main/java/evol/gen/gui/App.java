@@ -116,7 +116,9 @@ public class App extends Application{
         VBox vbox = new VBox();
         Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
         labelgrass.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
-        vbox.getChildren().addAll((Node) label,labelgrass);
+        Label labelanimals = new Label("Ilosc zwierzatek: ;(");
+        labelanimals.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals);
         hbox.getChildren().addAll((Node) grid, vbox);
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
         primaryStage.setScene(scene);
@@ -148,8 +150,8 @@ public class App extends Application{
         });
     }
 
-    private void init(SimulationEngine engine, String text){
-        String[] array = text.split(" ");
+    private void init(String text){
+        SimulationEngine engine = new SimulationEngine(myMap,Integer.parseInt(text),this);
         Thread threadEngine = new Thread(engine);
         threadEngine.start();
 
@@ -158,23 +160,33 @@ public class App extends Application{
     public void start(Stage primaryStage) {
         try {
             threadExceptionHandler();
+
+
             GrassField map = new GrassField(10,10,10);
-            SimulationEngine engine = new SimulationEngine(map,20,this);
             this.myMap = map;
+
+
             this.primaryStage = primaryStage;
             Button button = new Button("Start");
-            button.setPadding(new Insets(20, 100, 20 ,100));
+            button.setPadding(new Insets(15, 50, 15 ,50));
             button.setStyle("-fx-font: 24 arial;");
-            TextField text = new TextField("Enter directions");
-            text.setPadding(new Insets(20,30,20,30));
+            TextField text = new TextField("20");
+            text.setPadding(new Insets(15,30,15,30));
             text.setStyle("-fx-font: 24 arial;");
-            HBox hbox = new HBox(button);
-
+            text.setMaxWidth(250);
+            Label label = new Label("Starting number of animals");
+            label.setStyle("-fx-font: 24 arial;-fx-text-fill;");
+            HBox hbox = new HBox(label,text);
             hbox.setAlignment(Pos.CENTER);
             hbox.setSpacing(20);
+            VBox vbox = new VBox(button, hbox);
 
-            button.setOnAction(actionEvent -> init( engine, text.getText()));
-            Scene scene = new Scene(hbox, 400, 400);
+            vbox.setAlignment(Pos.CENTER);
+            vbox.setSpacing(20);
+
+
+            button.setOnAction(actionEvent -> init(text.getText()));
+            Scene scene = new Scene(vbox, 400, 400);
 
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);

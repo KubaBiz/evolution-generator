@@ -17,11 +17,7 @@ tworzy tyle roslinek ile trzeba kazdego dnia - > createProperNumberOfGrass().
 SimulationEngine - konstruktor żeby przyjmował parametry z App
 dodawanie martwych zwierząt do deathfield (potrzebne przy rośnięciu trawy) - dodane jest juz , funkcja aging() odejmuje energie, zwieksza wiek zwierząt i gdy energia jest mniejsza to inkrementuje daną pozycje w deathfield (osobna funkcja na to deathFieldIncrementer czy jakos tak)
 
-nie ma rośnięcia trawy na samym początku ( po prostu dodać CreateUniqueGrasses na początku symulacji/w konstruktorze? )
--- jest rosniecie traw na samym poczatku. W konstruktorze juz to jest dodane.
 
-konstruktor musi generować randomowe unikalne pozycje dla x zwierząt (x bierzemy z App) i tworzyć je na mapie
-- jest zrobione to juz. Zwierzaki są generowane randomowo.
 //jak jest zrobione to odznacz czy coś
 
 Symulacja:

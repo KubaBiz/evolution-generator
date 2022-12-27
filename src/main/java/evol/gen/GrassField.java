@@ -19,9 +19,13 @@ public class GrassField extends AbstractWorldMap{
         this.height = height;
         this.createGrasses(this.n);
         this.deathfield.put(new Vector2d(0,0), 0);
-        this.rownik= (int)(height/5) + 1;
+        this.rownik= (int)((height-1)/5) + 1;
     }
 
+    private int makeRownik(int height){
+        //if
+        return 0;
+    }
     public void createGrasses(int n){ //definiuje ile mozna stworzyc nowych trawek i randomowo je umeiszcza tam gdzie nie ma obiektow
         for(int i = 0; i < n; i++){
             Vector2d newVec = uniqPosVector(new Vector2d(topRight.x,topRight.y));
@@ -41,10 +45,10 @@ public class GrassField extends AbstractWorldMap{
         return new Vector2d(randomX, randomY);
     }
 
-    private boolean canplaceGrass(){
+    private boolean canPlaceGrassInEquator(){
         for (int i=0; i<width; i++){
-            for (int j=0; j<=height; j++){
-                if (objectAt(new Vector2d(i,j))==null){
+            for (int j=((int)(width/2) -1); j<((int)(width/2) -1+rownik); j++){
+                if (grassAt(new Vector2d(i,j))==null){
                     return true;
                 }
             }
@@ -53,16 +57,16 @@ public class GrassField extends AbstractWorldMap{
     }
 
     public boolean canMakeNewGrass(){
-        return this.grasses.size() < (this.topRight.y)*(this.topRight.x);
+        return this.grasses.size() < height*width;
     }
 
 
     // W App trzeba się upewnić że dostajemy ilość traw mniejszą bądź równą ilości miejsc na mapie
     public void createEnoughGrasses(boolean isItDeathField){
         if (!isItDeathField){
-                if (!canplaceGrass()) { return;}
+                if (!canMakeNewGrass()) { return;}
                 int oneInFive = (int)(random()*(5));
-                if (oneInFive==0){
+                if (oneInFive==0 || !canPlaceGrassInEquator()){
                     while (true) {
                         Vector2d zmienna = this.getRandomVectorFromMap();
                         if (grassAt(zmienna) == null) {
@@ -83,7 +87,7 @@ public class GrassField extends AbstractWorldMap{
 
         }
         else{
-            if (!canplaceGrass()) { return;}
+            if (!canMakeNewGrass()) { return;}
                 int oneInFive = (int)(random()*(5));
                 if (oneInFive==0){
                     while (true) {
@@ -147,12 +151,8 @@ public class GrassField extends AbstractWorldMap{
                 grasses.get(position);
     }
 
-    @Override
-    public HashMap<Vector2d, Animal> getAnimals() {
-        return null;
-    }
 
-
+    public HashMap<Vector2d,PriorityQueue<Animal>> getAnimals(){ return animals;}
     public HashMap<Vector2d, Grass> getGrasses() {
         return grasses;
     }

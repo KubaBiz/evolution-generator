@@ -42,7 +42,6 @@ public interface IWorldMap {
      */
     Object objectAt(Vector2d position);
 
-    HashMap<Vector2d,Animal> getAnimals();
     HashMap<Vector2d, Grass> getGrasses();
 
     void addAnimal(Vector2d vectorek, Animal animal);
