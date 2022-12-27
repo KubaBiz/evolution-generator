@@ -8,7 +8,7 @@ public class SimulationEngine implements IEngine,Runnable {
 
     private final GrassField myMap;
     //private App observer;
-    private int moveDelay = 300;
+    private int moveDelay = 600;
     private final boolean isAppOpening;
     private final boolean someMadness = false;
     private App observer;
@@ -65,19 +65,19 @@ public class SimulationEngine implements IEngine,Runnable {
         int maxDay = this.myMap.genLimit;
         int counter = 0;
         boolean start = true;
-        while(this.myMap.animals.size() > 0 && counter < maxDay){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
+        while(counter != -1){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
             if(!start) {
                 System.out.println("przed usuwaniem zwlok: ");
                 System.out.println(this.myMap);
                 this.observer.updateMap(0);
-                this.sleepNow(2000);
+                this.sleepNow(moveDelay);
                 this.myMap.removingCorpse();
-                this.sleepNow(2000);
             }
             start = false;
             this.observer.updateMap(1);
-            System.out.println("po usunieciu zwlok: ");
-            System.out.println(this.myMap);
+            this.sleepNow(moveDelay);
+            //System.out.println("po usunieciu zwlok: ");
+            //System.out.println(this.myMap);
             //przemieszczanie sie!!! ---------------------------------------------
             ArrayList<Vector2d> originalVectorki= new ArrayList<>();
             Set<Vector2d> keys = this.myMap.animals.keySet();
@@ -92,49 +92,53 @@ public class SimulationEngine implements IEngine,Runnable {
                         animal.nextActivatedGen(someMadness);
                         animal.move(new OptionsParser().parseOneOption(animal.gen.charAt(active)));//ta metoda z automatu dodaje do animals!
                         animal.moved = true;
-                        System.out.println(this.myMap);
-                        this.observer.updateMap(1);
-                        this.sleepNow(700);
+                        //System.out.println(this.myMap);
+
 
                     }else{
                         this.myMap.addAnimal(animal.position,animal);
                     }
 
                 }
+                this.observer.updateMap(1);
+                this.sleepNow(700);
 
             });
+
+            this.observer.updateMap(1);
+            this.sleepNow(moveDelay);
             this.myMap.clearMovedValues();
             // koniec funkcjonalnosci zwiazanej z przemieszczaniem sie!!------------------------
-            System.out.println("po przemieszczeniu sie");
+            //System.out.println("po przemieszczeniu sie");
             this.observer.updateMap(2);
-            this.sleepNow(2000);
+            this.sleepNow(moveDelay);
             this.myMap.eatingTime();
             this.observer.updateMap(2);
-            this.sleepNow(2000);
+            this.sleepNow(moveDelay);
             this.observer.updateMap(3);
-            this.sleepNow(2000);
-            int oldNumberOfAnimals = this.myMap.animals.size();
+            this.sleepNow(moveDelay);
+            int oldNumberOfAnimals = this.myMap.animalQuantity(); //jesli są nowe zwierzaki na mapie, to muszą przejść cały swoj genom!
             this.myMap.reproducingTime();
             counter = this.clearCounter(oldNumberOfAnimals,counter); // jesli pojawi sie nowe zwierze na mapie to musi wykonac caly swoj genom, wiec resetujemy counter;
             // inne zwierzaki będą powtarzać swoje sekwencje.
             this.observer.updateMap(3);
-            this.sleepNow(2000);
+            this.sleepNow(moveDelay);
             this.observer.updateMap(5);
-            this.sleepNow(2000);
+            this.sleepNow(moveDelay);
             this.myMap.createProperNumberOfGrass();
             this.observer.updateMap(5);
-            this.sleepNow(2000);
+            this.sleepNow(moveDelay);
             this.observer.updateMap(4);
-            this.sleepNow(2000);
+            this.sleepNow(moveDelay);
             this.myMap.aging();
-            this.sleepNow(2000);
-            System.out.println("-------INFO-----");
+            this.sleepNow(moveDelay);
+            //System.out.println("-------INFO-----");
             this.myMap.printInfo();
-            System.out.println(this.myMap);
-            System.out.println("-------INFO END-----");
+            //System.out.println(this.myMap);
+            //System.out.println("-------INFO END-----");
 
-            System.out.println("Po wykonanych pracach, przed starzeniem sie:");
-            System.out.println(this.myMap);
+            //System.out.println("Po wykonanych pracach, przed starzeniem sie:");
+            //System.out.println(this.myMap);
 
             this.observer.updateMap(4);
             counter++;

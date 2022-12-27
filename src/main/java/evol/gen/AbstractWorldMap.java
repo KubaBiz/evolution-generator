@@ -313,6 +313,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             PriorityQueue<Animal> queue = entry.getValue();
             number += queue.size();
         }
+        number += this.temporaryAnimalsArray.size();
         return number;
     }
 
