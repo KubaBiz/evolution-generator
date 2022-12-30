@@ -85,6 +85,7 @@ public class SimulationEngine implements IEngine,Runnable {
             originalVectorki.stream().forEach(vector->{
                 PriorityQueue<Animal> queue = ((GrassField)this.myMap).animals.get(vector);
                 while(!queue.isEmpty()) this.myMap.temporaryAnimalsArray.add(queue.poll());
+                ((GrassField)this.myMap).animals.remove(vector);
                 while(this.myMap.temporaryAnimalsArray.size() > 0){
                     Animal animal = this.myMap.temporaryAnimalsArray.remove(this.myMap.temporaryAnimalsArray.size()-1);
                     if(!animal.moved){

@@ -50,7 +50,7 @@ public class App extends Application{
     }
     private void drawMap(int statusOfMap){
         grid.setGridLinesVisible(true);
-        //grid.setStyle("-fx-margin: auto;");
+        //grid.setAlignment(Pos.CENTER);
         grid.setStyle("-fx-padding: 100 100 100 100;");
         GrassField myMap = this.myMap;
         int rangeY = myMap.getTopRight().y;
@@ -135,10 +135,11 @@ public class App extends Application{
 
         vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,newBtn);
         hbox.getChildren().addAll((Node) grid, vbox);
+        //hbox.setAlignment(Pos.CENTER);
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
-        //primaryStage.show();
+        primaryStage.show();
 
         System.out.println(this.myMap.toString());
         System.out.println();
