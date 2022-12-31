@@ -65,13 +65,14 @@ public class SimulationEngine implements IEngine,Runnable {
         int maxDay = this.myMap.genLimit;
         int counter = 0;
         boolean start = true;
-        while(counter != -1){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
+        while(counter != -1 && this.myMap.animalQuantity() > 0){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
             if(!start) {
                 System.out.println("przed usuwaniem zwlok: ");
                 System.out.println(this.myMap);
                 this.observer.updateMap(0);
                 this.sleepNow(moveDelay);
                 this.myMap.removingCorpse();
+                this.sleepNow(moveDelay);
             }
             start = false;
             this.observer.updateMap(1);

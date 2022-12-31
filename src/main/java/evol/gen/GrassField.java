@@ -188,4 +188,27 @@ public class GrassField extends AbstractWorldMap{
     public int freePlaces(){
         return this.width*this.height - this.animals.size();
     }
+
+    public int emptyFields(){
+        int quantity = 0;
+        HashSet<Vector2d> usedMap = new HashSet();
+        for (Vector2d key : this.animals.keySet()){
+            if(usedMap.add(key)){
+             quantity++;
+            }
+        }
+        for(Animal animal: this.temporaryAnimalsArray){
+            if(usedMap.add(animal.position)){
+                quantity++;
+            }
+        }
+        for(Vector2d key : this.grasses.keySet()){
+            if(usedMap.add(key)){
+                quantity++;
+            }
+        }
+
+        return this.width*this.height - quantity;
+    }
+
 }

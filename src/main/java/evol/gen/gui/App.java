@@ -121,10 +121,10 @@ public class App extends Application{
         for (Vector2d key : this.myMap.animals.keySet()) {
             PriorityQueue<Animal> queue = this.myMap.animals.get(key);
             for (Animal animal : queue) {
-                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children));
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children,animal.position));
             }
             for (Animal animal : this.myMap.temporaryAnimalsArray) {
-                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children));
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children,animal.position));
             }
 
         }
@@ -155,6 +155,23 @@ public class App extends Application{
             hbox.getChildren().add(vbox);
         }
         return hbox;
+    }
+    Vector2d getBestAnimal(){
+        ArrayList<copiedAnimal> sortedAnimals = new ArrayList<>();
+
+        for (Vector2d key : this.myMap.animals.keySet()) {
+            PriorityQueue<Animal> queue = this.myMap.animals.get(key);
+            for (Animal animal : queue) {
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children,animal.position));
+            }
+            for (Animal animal : this.myMap.temporaryAnimalsArray) {
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children,animal.position));
+            }
+
+        }
+        Collections.sort(sortedAnimals,new CopiedAnimalComparator());
+        if(sortedAnimals.size() == 0) return null;
+        return sortedAnimals.get(0).position;
     }
 
 
@@ -206,38 +223,43 @@ public class App extends Application{
         hbox.setSpacing(20);
         if(statusOfMap == 0){
             label = new Label("usuwanie zwlok");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(140, 0, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(140, 0, 0, 1);");
         }else if(statusOfMap == 1){
             label = new Label("przemieszczanie sie");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(242, 133, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(242, 133, 0, 1);");
         }else if(statusOfMap == 2){
             label = new Label("zjadanie traw");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(137, 242, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(137, 242, 0, 1);");
         }else if(statusOfMap == 3){
             label = new Label("rozmnazanie sie!");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(234, 0, 242, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(234, 0, 242, 1);");
         }else if(statusOfMap == 4){
             label = new Label("koniec dnia");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(40, 0, 242, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(40, 0, 242, 1);");
         }else if(statusOfMap == 5){
             label = new Label("nowe roslinki");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
         }
 
         VBox vbox = new VBox();
         Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
-        labelgrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelgrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
         Label labelanimals = new Label("Ilosc zwierzatek: "+this.myMap.animalQuantity());
-        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
 
-        Label labelFreePlaces= new Label("Ilosc wolnych miejsc: "+this.myMap.freePlaces());
-        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        Label labelFreePlaces= new Label("Ilosc wolnych miejsc (bez zwierzat): "+this.myMap.freePlaces());
+        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
 
-        Label averageLengOfLife= new Label("srednia dlugosc zycia (dla martwych): "+this.myMap.averageDeathAge.averageAge());
-        averageLengOfLife.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(89, 54, 0, 1);");
+        Label emptySpace= new Label("Ilosc wolnych miejsc (puste pola): "+this.myMap.emptyFields());
+        emptySpace.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+
+
+
+        Label averageLengOfLife= new Label("srednia dlugosc zycia (dla martwych): "+this.myMap.averageDeathAge.averageAge()+" dni");
+        averageLengOfLife.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(89, 54, 0, 1);");
 
         Label averageEnergy= new Label("srednia energia (dla zywych): "+this.myMap.averageEnergy());
-        averageEnergy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(255, 71, 71, 1);");
+        averageEnergy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(255, 71, 71, 1);");
 
 
 
@@ -251,13 +273,19 @@ public class App extends Application{
         newBtn.setOnAction(ac->{
             this.threadEngine.suspend();
             newBtn.setText("start");
+            Vector2d pos = this.getBestAnimal();
+            if(pos != null){
+                VBox result = drawObject(pos);
+                result.setStyle("-fx-background-color: red;");
+                grid.add(result, pos.x+1, rangeY-pos.y+1);
+            }
             newBtn.setOnAction(ac2->{
                 this.threadEngine.resume();
             });
         });
         HBox buttonContainer = new HBox(newBtn);
         buttonContainer.setMargin(newBtn,new Insets(10, 20, 20, 10));
-        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,labelFreePlaces,this.fiveMostPopularGenes(),averageEnergy,averageLengOfLife,this.getAnimalInfo(),buttonContainer);
+        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,labelFreePlaces,emptySpace,this.fiveMostPopularGenes(),averageEnergy,averageLengOfLife,this.getAnimalInfo(),buttonContainer);
         hbox.getChildren().addAll((Node) grid, vbox);
 
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
