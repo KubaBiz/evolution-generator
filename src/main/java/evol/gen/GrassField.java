@@ -184,4 +184,8 @@ public class GrassField extends AbstractWorldMap{
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         return;
     }
+
+    public int freePlaces(){
+        return this.width*this.height - this.animals.size();
+    }
 }

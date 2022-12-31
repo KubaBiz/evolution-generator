@@ -16,7 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class App extends Application{
 
@@ -48,6 +51,113 @@ public class App extends Application{
         }
         return result;
     }
+
+    public HBox getAnimalInfo(){
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        int quantity = 0;
+        for (Vector2d key : this.myMap.animals.keySet()) {
+            VBox vbox = new VBox();
+            Label positionLabel = new Label(key.toString()+":");
+            positionLabel.setStyle("-fx-font: 11 arial");
+            vbox.getChildren().add(positionLabel);
+            vbox.setSpacing(5);
+
+            PriorityQueue<Animal> queue = this.myMap.animals.get(key);
+            boolean flag = false;
+            for (Animal animal : queue) {
+                VBox infoBox = new VBox();
+
+                    Label energyLabel = new Label(String.valueOf(animal.energy));
+                    energyLabel.setStyle("-fx-font: 11 arial");
+                    String gen = animal.gen;
+                    if(gen.length() > 6) gen = gen.substring(0,6) + "...";
+                    Label genLabel = new Label(gen);
+                    genLabel.setStyle("-fx-font: 8 arial;-fx-font-weight:bold;");
+
+                    infoBox.getChildren().addAll((Node) energyLabel,genLabel);
+                infoBox.setSpacing(2);
+                infoBox.setAlignment(Pos.CENTER);
+                vbox.getChildren().add(infoBox);
+                flag = true;
+            }
+            for (Animal animal : this.myMap.temporaryAnimalsArray) {
+                VBox infoBox = new VBox();
+
+                Label energyLabel = new Label(String.valueOf(animal.energy));
+                energyLabel.setStyle("-fx-font: 11 arial");
+
+                String gen = animal.gen;
+                if(gen.length() > 6) gen = gen.substring(0,6) + "...";
+                Label genLabel = new Label(gen);
+                genLabel.setStyle("-fx-font: 7 arial;-fx-font-weight:bold;");
+
+                infoBox.getChildren().addAll((Node) energyLabel,genLabel);
+                infoBox.setSpacing(2);
+                infoBox.setAlignment(Pos.CENTER);
+                vbox.getChildren().add(infoBox);
+                flag = true;
+            }
+
+            if(flag) {
+                hbox.getChildren().add(vbox);
+                hbox.setSpacing(2);
+                quantity+=1;
+                if(quantity >= 15){
+                    Label kropki = new Label(". . .");
+                    hbox.getChildren().add(kropki);
+                    return hbox;
+                }
+            }
+
+        }
+        return hbox;
+    }
+
+
+    public HBox fiveMostPopularGenes(){
+        ArrayList<copiedAnimal> sortedAnimals = new ArrayList<>();
+
+        for (Vector2d key : this.myMap.animals.keySet()) {
+            PriorityQueue<Animal> queue = this.myMap.animals.get(key);
+            for (Animal animal : queue) {
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children));
+            }
+            for (Animal animal : this.myMap.temporaryAnimalsArray) {
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children));
+            }
+
+        }
+        Collections.sort(sortedAnimals,new CopiedAnimalComparator());
+
+        HBox hbox = new HBox();
+        Label label = new Label("5 najpopularniejszych genomow: ");
+        label.setStyle("-fx-font: 18 arial;-fx-font-weight:bold;");
+        hbox.getChildren().add(label);
+        hbox.setSpacing(3);
+        for(int i =0; i < Math.min(sortedAnimals.size(),5);i++){
+            copiedAnimal animal = sortedAnimals.get(i);
+            VBox vbox = new VBox();
+            vbox.setSpacing(4);
+
+            label = new Label(animal.gen);
+            label.setStyle("-fx-font: 14 arial;-fx-font-weight:bold;");
+            label.setPadding(new Insets(0,5,0,5));
+            label.setAlignment(Pos.CENTER);
+            vbox.getChildren().add(label);
+
+            Label label0 = new Label("("+animal.energy+")");
+            label0.setStyle("-fx-font: 14 arial;-fx-font-weight:bold;");
+            label0.setPadding(new Insets(0,5,0,5));
+            label0.setAlignment(Pos.CENTER);
+            vbox.getChildren().add(label0);
+
+            hbox.getChildren().add(vbox);
+        }
+        return hbox;
+    }
+
+
     private void drawMap(int statusOfMap){
         grid.setGridLinesVisible(true);
         //grid.setAlignment(Pos.CENTER);
@@ -71,6 +181,7 @@ public class App extends Application{
                     //tworzenie labela dla pierwszej wspolrzednej z gory w poszczegolnych kolumnach
                     value = j;
                     label = new Label(value.toString());
+
                     grid.add(label, j+1, 0);
                     grid.getColumnConstraints().add(new ColumnConstraints(width));
                     GridPane.setHalignment(label, HPos.CENTER);
@@ -95,34 +206,47 @@ public class App extends Application{
         hbox.setSpacing(20);
         if(statusOfMap == 0){
             label = new Label("usuwanie zwlok");
-            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(140, 0, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(140, 0, 0, 1);");
         }else if(statusOfMap == 1){
             label = new Label("przemieszczanie sie");
-            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(242, 133, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(242, 133, 0, 1);");
         }else if(statusOfMap == 2){
             label = new Label("zjadanie traw");
-            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(137, 242, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(137, 242, 0, 1);");
         }else if(statusOfMap == 3){
             label = new Label("rozmnazanie sie!");
-            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(234, 0, 242, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(234, 0, 242, 1);");
         }else if(statusOfMap == 4){
             label = new Label("koniec dnia");
-            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(40, 0, 242, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(40, 0, 242, 1);");
         }else if(statusOfMap == 5){
             label = new Label("nowe roslinki");
-            label.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
         }
 
         VBox vbox = new VBox();
         Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
-        labelgrass.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelgrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
         Label labelanimals = new Label("Ilosc zwierzatek: "+this.myMap.animalQuantity());
-        labelanimals.setStyle("-fx-padding: 100 100 100 100;-fx-font: 24 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+
+        Label labelFreePlaces= new Label("Ilosc wolnych miejsc: "+this.myMap.freePlaces());
+        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(34, 255, 0, 1);");
+
+        Label averageLengOfLife= new Label("srednia dlugosc zycia (dla martwych): "+this.myMap.averageDeathAge.averageAge());
+        averageLengOfLife.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(89, 54, 0, 1);");
+
+        Label averageEnergy= new Label("srednia energia (dla zywych): "+this.myMap.averageEnergy());
+        averageEnergy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-text-fill: rgba(255, 71, 71, 1);");
+
+
+
 
         //dziala ale jak sam widzisz, są warningi, zeby suspendu i resuma nie uzywac raczej w javie bo niebezpieczne.
         // jak znajdziesz lepsze wyjscie czy cos to dawaj znac, tez bede szukał.
         Button newBtn = new Button("stop");
         newBtn.setPadding(new Insets(5, 20, 5 ,20));
+
         newBtn.setStyle("-fx-font: 18 arial;");
         newBtn.setOnAction(ac->{
             this.threadEngine.suspend();
@@ -131,11 +255,11 @@ public class App extends Application{
                 this.threadEngine.resume();
             });
         });
-
-
-        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,newBtn);
+        HBox buttonContainer = new HBox(newBtn);
+        buttonContainer.setMargin(newBtn,new Insets(10, 20, 20, 10));
+        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,labelFreePlaces,this.fiveMostPopularGenes(),averageEnergy,averageLengOfLife,this.getAnimalInfo(),buttonContainer);
         hbox.getChildren().addAll((Node) grid, vbox);
-        //hbox.setAlignment(Pos.CENTER);
+
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
@@ -191,23 +315,7 @@ public class App extends Application{
         this.threadEngine = new Thread(engine);
 
         threadEngine.start();
-        //abstractWorldMap
-//        public final int genLimit = 10;
-//        public final int eatingEnergy = 100;
-//        public final int minEnergyToReproduce = 50;
-//        public final int initEnergy = 50;
-//        public final int takenEnergyEachDay = 25;
-//        public final boolean globe = true;
-//        public final int newGrasses = 40;
-//        public final boolean isItDeathField = false;
-//     GrassField
-          //public final int width;
-          //public final int height;
-          //int n;
-      // Simulation Engine
-         //public final boolean someMadness = false;
-      //animal:
-        //public int fullRandomness = 0;
+
     }
 
     public HBox createHboxParameters(Label label,TextField text){

@@ -22,6 +22,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     //limited gen:
     public int genLimit = 10;
 
+    public deadAnimals averageDeathAge = new deadAnimals();
     public int eatingEnergy = 100;
     public int minEnergyToReproduce = 50;
 
@@ -278,6 +279,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                 animal.addEnergy(-takenEnergyEachDay);
                 if(animal.energy <= 0){
                     animal.isDead = true;
+                    this.averageDeathAge.addDeadAnimal(animal);
                     this.deathFieldIncrementer(animal);
                 }
             }
@@ -323,5 +325,27 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         if(this.fullRandomness) return 1;
         else return 0;
     }
+
+    public double averageEnergy(){
+        int quantity = 0;
+        int sum =0;
+        for (Map.Entry<Vector2d, PriorityQueue<Animal>> entry : this.animals.entrySet()) {
+            PriorityQueue<Animal> queue = entry.getValue();
+            Iterator<Animal> iterator = queue.iterator();
+            while (iterator.hasNext()) {
+                Animal animal = iterator.next();
+                sum += animal.energy;
+                quantity++;
+                }
+            for(Animal animal : this.temporaryAnimalsArray){
+                sum += animal.energy;
+                quantity++;
+            }
+        }
+        if(quantity== 0) return 0.0;
+        return  Math.round(((double) sum/ ((double) quantity)*100.0))/100.0;
+    }
+
+
 
 }
