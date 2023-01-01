@@ -209,6 +209,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         PriorityQueue<Animal> queue = this.animals.get(vector);
         Animal animal1 = queue.poll();
         animal1.addEnergy(this.eatingEnergy);
+        animal1.increaseNrOfEatenGrass();
         queue.add(animal1);
     }
 

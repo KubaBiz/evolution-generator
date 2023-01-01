@@ -35,6 +35,12 @@ public class App extends Application{
     public Thread threadEngine;
     public SimulationEngine engine;
 
+    public Stage animalStage;
+
+    public boolean isTracked = false;
+    public Animal trackedAnimal;
+
+    public boolean isStopped = false;
     private VBox drawObject(Vector2d position) {
         VBox result = null;
         if (this.myMap.isOccupied(position)) {
@@ -174,6 +180,57 @@ public class App extends Application{
         return sortedAnimals.get(0).position;
     }
 
+    public boolean checkingPositionOnMap(int j, int i,int rangeY){
+        int posX = j-1;
+        int posY = rangeY -i + 1;
+        if(this.myMap.animals.containsKey(new Vector2d(j,i))){
+            return true;
+        }
+        return false;
+    }
+
+
+    public void addEventHandler(VBox result,Vector2d position){
+        result.setOnMouseClicked(event -> {
+            if(this.isStopped){
+                Animal animal = this.myMap.animals.get(position).peek();
+                this.isTracked = true;
+                this.trackedAnimal = animal;
+                this.animalStage = new Stage();
+
+                this.updateAnimalDetailsMap();
+
+            }
+        });;
+    }
+
+    public void updateAnimalDetailsMap(){
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(1);
+        Label pos = new Label("Pozycja na mapie:"+this.trackedAnimal.position);
+        pos.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(31, 31, 31, 1);");
+        Label gen = new Label("Genom:"+this.trackedAnimal.gen);
+        gen.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(64, 64, 64, 1);");
+        Label activatedGen = new Label("Aktywny gen: "+this.trackedAnimal.gen.charAt(this.trackedAnimal.activatedGen));
+        activatedGen.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(96, 96, 96, 1);");
+        Label energy= new Label("Ilosc energii: "+this.trackedAnimal.energy);
+        energy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(128, 128, 128, 1);");
+        Label children= new Label("Ilosc dzieci: "+this.trackedAnimal.children);
+        children.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(160, 160, 160, 1);");
+        Label days= new Label("ilosc przezytych dni: "+this.trackedAnimal.age);
+        days.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(192, 192, 192, 1);");
+        String isDeadMessage = this.trackedAnimal.energy == 0 ?  "zmarło w wieku "+this.trackedAnimal.age : "nie zmarlo";
+        Label isDead= new Label(isDeadMessage);
+        isDead.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(255, 71, 71, 1);");
+        vbox.getChildren().addAll((Node)pos, gen,activatedGen,energy,children,days,isDead);
+        Scene scene = new Scene(vbox, 300, 300);
+        this.animalStage.setHeight(800);
+        this.animalStage.setWidth(400);
+        this.animalStage.setScene(scene);
+        //this.animalStage.setMaximized(true);
+        this.animalStage.show();
+    }
 
     private void drawMap(int statusOfMap){
         grid.setGridLinesVisible(true);
@@ -205,6 +262,10 @@ public class App extends Application{
                 }
                 //rysowanie i stylizowanie kwadratów na mapie
                 VBox result = drawObject(new Vector2d(j, i));
+                if(this.checkingPositionOnMap(j,i,rangeY)){
+                    this.addEventHandler(result,new Vector2d(j,i));
+                }
+//grid.add(result, pos.x+1, rangeY-pos.y+1);
                 grid.add(result, j+1, rangeY-i+1);
                 GridPane.setHalignment(label, HPos.CENTER);
             }
@@ -245,13 +306,13 @@ public class App extends Application{
         Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
         labelgrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
         Label labelanimals = new Label("Ilosc zwierzatek: "+this.myMap.animalQuantity());
-        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(250, 189, 47, 1);");
 
         Label labelFreePlaces= new Label("Ilosc wolnych miejsc (bez zwierzat): "+this.myMap.freePlaces());
-        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(121, 85, 72, 1);");
 
         Label emptySpace= new Label("Ilosc wolnych miejsc (puste pola): "+this.myMap.emptyFields());
-        emptySpace.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+        emptySpace.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(33, 150, 243, 1);");
 
 
 
@@ -278,8 +339,18 @@ public class App extends Application{
                 VBox result = drawObject(pos);
                 result.setStyle("-fx-background-color: red;");
                 grid.add(result, pos.x+1, rangeY-pos.y+1);
+                this.addEventHandler(result,new Vector2d(pos.x,pos.y));
+
+                this.isStopped =  true;
+                if(this.isTracked) {
+                    this.animalStage.close();
+                    this.isTracked = false;
+                }
+                this.animalStage = new Stage();
+                this.closingStage();
             }
             newBtn.setOnAction(ac2->{
+                this.isStopped = false;
                 this.threadEngine.resume();
             });
         });
@@ -292,7 +363,7 @@ public class App extends Application{
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
-
+        if(this.isTracked) this.updateAnimalDetailsMap();
         System.out.println(this.myMap.toString());
         System.out.println();
         //System.out.println("System zakończył działanie");
@@ -343,7 +414,12 @@ public class App extends Application{
         this.threadEngine = new Thread(engine);
 
         threadEngine.start();
+    }
 
+    public void closingStage(){
+        this.animalStage.setOnCloseRequest(event -> {
+           this.isTracked = false;
+        });
     }
 
     public HBox createHboxParameters(Label label,TextField text){

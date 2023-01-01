@@ -19,6 +19,8 @@ public class Animal extends AbstractWorldMapElement{
     public boolean moved = false;
     public int fullRandomness = 0; //WARIANT DO ZAZNACZENIA!
 
+    public int eatenGrass = 0;
+
 public final int id;
     protected final List<IPositionChangeObserver> observers = new ArrayList<>();
     private MapDirection orientation =  MapDirection.NORTH;
@@ -267,5 +269,8 @@ public final int id;
         this.age+=1;
     }
 
+    public void increaseNrOfEatenGrass(){
+        this.eatenGrass+=1;
+    }
 }
 
