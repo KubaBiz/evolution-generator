@@ -4,7 +4,6 @@ import java.util.*;
 import static java.lang.Math.random;
 
 public class GrassField extends AbstractWorldMap{
-    public int n;
     int rownik;
     public final int width;
     public final int height;
@@ -12,26 +11,21 @@ public class GrassField extends AbstractWorldMap{
     private HashMap<Vector2d,Grass> grasses = new HashMap<>();
 
 
-    public GrassField(int width,int height,int n){
+    public GrassField(int width,int height,int n, boolean isItDeathField){
         super(new Vector2d(width-1,height-1));
-        this.n = n;
         this.width = width;
         this.height = height;
-        this.createGrasses(this.n);
         this.deathfield.put(new Vector2d(0,0), 0);
         this.rownik= (int)((height-1)/5) + 1;
+        this.isItDeathField = isItDeathField;
+        this.createProperNumberOfGrass(n);
     }
 
-    private int makeRownik(int height){
-        //if
-        return 0;
-    }
-    public void createGrasses(int n){ //definiuje ile mozna stworzyc nowych trawek i randomowo je umeiszcza tam gdzie nie ma obiektow
-        for(int i = 0; i < n; i++){
-            Vector2d newVec = uniqPosVector(new Vector2d(topRight.x,topRight.y));
-            grasses.put(newVec,new Grass(newVec));
-        }
-    }
+    //public void createGrasses(int n){ //definiuje ile mozna stworzyc nowych trawek i randomowo je umeiszcza tam gdzie nie ma obiektow
+    //    for(int i =0; i < n; i++){
+    //        createEnoughGrasses(isItDeathField);
+    //    }
+    //}
 
     public Vector2d getRandomVectorFromMap(){
         int randomX = (int)(random() * (width));
@@ -41,7 +35,7 @@ public class GrassField extends AbstractWorldMap{
 
     public Vector2d getRandomVectorFromEquator(){
         int randomX = (int)(random() * (width));
-        int randomY = (int)(random() * (rownik)) + (int)(width/2) -1;
+        int randomY = (int)(random() * (rownik)) + (int)(height/2) -1;
         return new Vector2d(randomX, randomY);
     }
 
@@ -128,9 +122,16 @@ public class GrassField extends AbstractWorldMap{
                 }
         }
     }
-    public void createProperNumberOfGrass(){
-        for(int i =0; i < this.newGrasses; i++){
-            this.createEnoughGrasses(this.isItDeathField);
+    public void createProperNumberOfGrass(int n){
+        if (n==-1) {
+            for (int i = 0; i < this.newGrasses; i++) {
+                this.createEnoughGrasses(this.isItDeathField);
+            }
+        }
+        else{
+            for(int i =0; i < n; i++){
+                createEnoughGrasses(isItDeathField);
+            }
         }
     }
 

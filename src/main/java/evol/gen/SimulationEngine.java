@@ -13,19 +13,6 @@ public class SimulationEngine implements IEngine,Runnable {
     public boolean someMadness = false;
     private App observer;
 
-
-    public SimulationEngine(GrassField map, int initAnimals) {
-        this.myMap = map; //nasza kochana mapa
-
-        this.isAppOpening =false;
-        for(int i = 0; i < initAnimals;i++){
-            Vector2d newVec =((GrassField) this.myMap).getRandom(((GrassField)this.myMap).topRight);
-            Animal animal = new Animal(this.myMap, newVec);
-            this.myMap.place(animal);
-        }
-        System.out.println(myMap.toString());
-    }
-
     public SimulationEngine(GrassField map, int initAnimals,App app) {
         this.myMap = map; //nasza kochana mapa
         this.observer = app;
@@ -41,16 +28,14 @@ public class SimulationEngine implements IEngine,Runnable {
 
     @Override
     public void run() {
-//
+
 //        Symulacja każdego dnia składa się z poniższej sekwencji kroków:
-//
+
 //        usunięcie martwych zwierząt z mapy,
 //        skręt i przemieszczenie każdego zwierzęcia,
 //        konsumpcja roślin na których pola weszły zwierzęta,
 //        rozmnażanie się najedzonych zwierząt znajdujących się na tym samym polu,
 //        wzrastanie nowych roślin na wybranych polach mapy.
-
-
 
         //mamy listę zwierzątek; teraz musimy uzyskać informację o ich aktywowanym genie:
         //w petli:
@@ -59,10 +44,7 @@ public class SimulationEngine implements IEngine,Runnable {
         // zwierzątka się zaczynają poruszać (tutaj zajdzie duzo roznych akcji)
         //warunek pętli: (poniewaz wiemy, ze kazdy zwierzak ma taką samą długość genomu, to wybierzmy jeden ze zwierzakow i dla niego robmy warunek)
 
-
-
         this.observer.updateMap(0);
-        int maxDay = this.myMap.genLimit;
         int counter = 0;
         boolean start = true;
         while(counter != -1 && this.myMap.animalQuantity() > 0){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
@@ -127,7 +109,7 @@ public class SimulationEngine implements IEngine,Runnable {
             this.sleepNow(moveDelay);
             this.observer.updateMap(5);
             this.sleepNow(moveDelay);
-            this.myMap.createProperNumberOfGrass();
+            this.myMap.createProperNumberOfGrass(-1);
             this.observer.updateMap(5);
             this.sleepNow(moveDelay);
             this.observer.updateMap(4);

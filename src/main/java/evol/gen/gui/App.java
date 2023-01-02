@@ -397,7 +397,8 @@ public class App extends Application{
         int widthInt = Integer.parseInt(width);
         int heightInt = Integer.parseInt(height);
         int nInt = Integer.parseInt(n);
-        GrassField map = new GrassField(widthInt, heightInt, nInt);
+        boolean isItDeathFieldBoolean = Boolean.parseBoolean(isItDeathField);
+        GrassField map = new GrassField(widthInt, heightInt, nInt, isItDeathFieldBoolean);
         this.myMap = map;
         this.myMap.genLimit = Integer.parseInt(genLimit);
         this.myMap.eatingEnergy = Integer.parseInt(eatingEnergy);
@@ -406,7 +407,6 @@ public class App extends Application{
         this.myMap.takenEnergyEachDay = Integer.parseInt(takenEnergyEachDay);
         this.myMap.globe = Boolean.parseBoolean(globe);
         this.myMap.newGrasses = Integer.parseInt(newGrasses);
-        this.myMap.isItDeathField = Boolean.parseBoolean(isItDeathField);
         this.myMap.fullRandomness = Boolean.parseBoolean(fullRandomness);
 
         this.engine = new SimulationEngine(myMap, Integer.parseInt(nrOfAnimals), this);
