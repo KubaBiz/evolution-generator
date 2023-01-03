@@ -451,7 +451,7 @@ public class App extends Application{
             HBox nrOfAnimalsHBox = createHboxParameters(label_nrOfAnimals, nrOfAnimals);
 
             TextField genLimitField = new TextField("10");
-            Label genLimitLabel = new Label("Generation limit");
+            Label genLimitLabel = new Label("Gen length");
             HBox genLimitHBox = createHboxParameters(genLimitLabel, genLimitField);
 
             TextField eatingEnergyField = new TextField("100");
@@ -505,15 +505,30 @@ public class App extends Application{
             HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, fullRandomnessField);
 
 
-            VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox);
+            //z tych parametrów jeszcze nie ma pożytku
+            TextField minimalGenField = new TextField("0");
+            Label minimalGenLabel = new Label("Minimalna liczba mutacji");
+            HBox minimalGenHBox = createHboxParameters(minimalGenLabel, minimalGenField);
+
+            TextField maximumGenField = new TextField("10");
+            Label maximumGenLabel = new Label("Maksymalna liczba mutacji");
+            HBox maximumGenHBox = createHboxParameters(maximumGenLabel, maximumGenField);
+
+            TextField excelNameField = new TextField("");
+            Label excelNameLabel = new Label("Nazwa pliku csv");
+            HBox excelNameHBox = createHboxParameters(excelNameLabel, excelNameField);
+
+
+
+            VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox, maximumGenHBox);
             vbox0.setAlignment(Pos.CENTER);
             vbox0.setSpacing(20);
 
-            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox );
+            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox, minimalGenHBox );
             vbox1.setAlignment(Pos.CENTER);
             vbox1.setSpacing(20);
 
-            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, newGrassesHBox, eatingEnergyHBox);
+            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, newGrassesHBox, eatingEnergyHBox, excelNameHBox);
             vbox2.setAlignment(Pos.CENTER);
             vbox2.setSpacing(20);
 

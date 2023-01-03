@@ -28,7 +28,7 @@ energia konieczna, by uznać zwierzaka za najedzonego (i gotowego do rozmnażani
 energia rodziców zużywana by stworzyć potomka, (zawsze jest to połowa initial energy) - zrobione
 minimalna i maksymalna liczba mutacji u potomków (może być równa 0),
 wariant mutacji (wyjaśnione w sekcji poniżej), (nie wiem jak to sprawdzić)
-długość genomu zwierzaków,
+długość genomu zwierzaków, - zrobione
 wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej), (nie wiem jak to sprawdzić)
 
 Warianty:
