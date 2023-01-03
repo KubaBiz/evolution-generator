@@ -443,7 +443,7 @@ public class App extends Application{
 
             this.primaryStage = primaryStage;
             Button button = new Button("Start");
-            button.setPadding(new Insets(15, 50, 15 ,50));
+            button.setPadding(new Insets(5, 50, 5 ,50));
             button.setStyle("-fx-font: 24 arial;");
 
             TextField nrOfAnimals = new TextField("20");
@@ -505,15 +505,15 @@ public class App extends Application{
             HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, fullRandomnessField);
 
 
-            VBox vbox0 = new VBox(button, eatingEnergyHBox, minEnergyToReproduceHBox, initEnergyHBox, takenEnergyEachDayHBox);
+            VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox);
             vbox0.setAlignment(Pos.CENTER);
             vbox0.setSpacing(20);
 
-            VBox vbox1 = new VBox(nrOfAnimalsHBox, genLimitHBox,globeHBox, newGrassesHBox, isItDeathFieldHBox );
+            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox );
             vbox1.setAlignment(Pos.CENTER);
             vbox1.setSpacing(20);
 
-            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, someMadnessHBox, fullRandomnessHBox);
+            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, newGrassesHBox, eatingEnergyHBox);
             vbox2.setAlignment(Pos.CENTER);
             vbox2.setSpacing(20);
 
