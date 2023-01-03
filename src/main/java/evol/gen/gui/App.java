@@ -5,6 +5,7 @@ import evol.gen.*;
 import evol.gen.GrassField;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -408,6 +410,14 @@ public class App extends Application{
         this.myMap.globe = Boolean.parseBoolean(globe);
         this.myMap.newGrasses = Integer.parseInt(newGrasses);
         this.myMap.fullRandomness = Boolean.parseBoolean(fullRandomness);
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
 
         this.engine = new SimulationEngine(myMap, Integer.parseInt(nrOfAnimals), this);
         this.engine.someMadness = Boolean.parseBoolean(someMadness);
