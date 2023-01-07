@@ -9,4 +9,6 @@ public interface IMapElement {
     String getLinkToImage();
     //get link to image
     boolean isAt(Vector2d position);
+
+    int getEnergy();
 }

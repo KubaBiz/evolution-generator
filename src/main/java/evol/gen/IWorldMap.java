@@ -50,4 +50,6 @@ public interface IWorldMap {
     ArrayList<Animal> moveAllAnimalsToArrayList();
 
     int setFullRandomness();
+    int getMinNrOfMutations();
+    int getMaxNrOfMutations();
 }

@@ -10,7 +10,9 @@ public class Grass extends AbstractWorldMapElement{
         return "*";
     }
 
-
+    public int getEnergy(){
+        return 0;
+    }
 
 
 }

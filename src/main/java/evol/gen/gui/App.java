@@ -48,7 +48,7 @@ public class App extends Application{
         if (this.myMap.isOccupied(position)) {
             Object object = this.myMap.objectAt(position);
             if (object != null) {
-                GuiElementBox newElem = new GuiElementBox((IMapElement) object);
+                GuiElementBox newElem = new GuiElementBox((IMapElement) object,width,height,this.myMap.averageEnergy());
                 result = newElem.getBox();
 
             } else {
@@ -218,6 +218,11 @@ public class App extends Application{
         activatedGen.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(96, 96, 96, 1);");
         Label energy= new Label("Ilosc energii: "+this.trackedAnimal.energy);
         energy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(128, 128, 128, 1);");
+
+        Label eatenGrass= new Label("Zjedzone roslinki: "+this.trackedAnimal.eatenGrass);
+        eatenGrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34,139,34, 1);");
+
+
         Label children= new Label("Ilosc dzieci: "+this.trackedAnimal.children);
         children.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(160, 160, 160, 1);");
         Label days= new Label("ilosc przezytych dni: "+this.trackedAnimal.age);
@@ -225,7 +230,7 @@ public class App extends Application{
         String isDeadMessage = this.trackedAnimal.energy == 0 ?  "zmarło w wieku "+this.trackedAnimal.age : "nie zmarlo";
         Label isDead= new Label(isDeadMessage);
         isDead.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(255, 71, 71, 1);");
-        vbox.getChildren().addAll((Node)pos, gen,activatedGen,energy,children,days,isDead);
+        vbox.getChildren().addAll((Node)pos, gen,activatedGen,energy,eatenGrass,children,days,isDead);
         Scene scene = new Scene(vbox, 300, 300);
         this.animalStage.setHeight(800);
         this.animalStage.setWidth(400);
@@ -358,7 +363,7 @@ public class App extends Application{
         });
         HBox buttonContainer = new HBox(newBtn);
         buttonContainer.setMargin(newBtn,new Insets(10, 20, 20, 10));
-        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,labelFreePlaces,emptySpace,this.fiveMostPopularGenes(),averageEnergy,averageLengOfLife,this.getAnimalInfo(),buttonContainer);
+        vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,labelFreePlaces,emptySpace,this.fiveMostPopularGenes(),averageEnergy,averageLengOfLife,buttonContainer,this.getAnimalInfo());
         hbox.getChildren().addAll((Node) grid, vbox);
 
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
@@ -395,7 +400,7 @@ public class App extends Application{
                       String minEnergyToReproduce, String initEnergy,
                       String takenEnergyEachDay, String globe, String newGrasses, String isItDeathField,
                       String width, String height, String n,
-                      String someMadness, String fullRandomness) {
+                      String someMadness, String fullRandomness,String minimumGen,String maximumGen) {
         int widthInt = Integer.parseInt(width);
         int heightInt = Integer.parseInt(height);
         int nInt = Integer.parseInt(n);
@@ -410,7 +415,8 @@ public class App extends Application{
         this.myMap.globe = Boolean.parseBoolean(globe);
         this.myMap.newGrasses = Integer.parseInt(newGrasses);
         this.myMap.fullRandomness = Boolean.parseBoolean(fullRandomness);
-
+        this.myMap.minNrOfMutations = Integer.parseInt(minimumGen);
+        this.myMap.maxNrOfMutations = Integer.parseInt(maximumGen);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -562,7 +568,9 @@ public class App extends Application{
                             heightField.getText(),
                             nField.getText(),
                             someMadnessField.getText(),
-                            fullRandomnessField.getText())
+                            fullRandomnessField.getText(),
+                            minimalGenField.getText(),
+                            maximumGenField.getText())
             );
             Scene scene = new Scene(mainHbox, 400, 400);
 

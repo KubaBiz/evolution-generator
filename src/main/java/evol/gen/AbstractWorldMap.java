@@ -36,6 +36,16 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     public boolean fullRandomness = false;
 
+    public int minNrOfMutations = 0;
+    public int maxNrOfMutations = 0;
+
+    public int getMinNrOfMutations(){
+        return this.minNrOfMutations;
+    }
+    public int getMaxNrOfMutations(){
+        return this.maxNrOfMutations;
+    }
+
     public AbstractWorldMap(Vector2d topRight){
         if(topRight.x > 0 && topRight.y > 0) this.topRight = topRight;
             //this.bottomLeft = bottomLeft;

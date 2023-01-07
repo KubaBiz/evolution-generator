@@ -99,7 +99,7 @@ public final int id;
 
         StringBuilder newGen = new StringBuilder();
 
-        int quantity = randomizer.nextInt(gen.length());
+        int quantity = randomizer.nextInt(this.myMap.getMaxNrOfMutations()-this.myMap.getMinNrOfMutations()+1)+this.myMap.getMinNrOfMutations();
         for(int i =0; i < quantity; i++){
             int index = randomizer.nextInt(gen.length());//losowany index do zamiany
             while(selectedChars.containsKey(index)) index = randomizer.nextInt(gen.length()); //ma znalezc inny ten index!
@@ -272,5 +272,10 @@ public final int id;
     public void increaseNrOfEatenGrass(){
         this.eatenGrass+=1;
     }
+
+    public int getEnergy(){
+        return this.energy;
+    }
+
 }
 
