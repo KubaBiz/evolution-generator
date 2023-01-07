@@ -464,6 +464,7 @@ public class App extends Application{
             Label genLimitLabel = new Label("Gen length");
             HBox genLimitHBox = createHboxParameters(genLimitLabel, genLimitField);
 
+
             TextField eatingEnergyField = new TextField("100");
             Label eatingEnergyLabel = new Label("Eating energy");
             HBox eatingEnergyHBox = createHboxParameters(eatingEnergyLabel, eatingEnergyField);
@@ -529,7 +530,6 @@ public class App extends Application{
             HBox excelNameHBox = createHboxParameters(excelNameLabel, excelNameField);
 
 
-
             VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox, maximumGenHBox);
             vbox0.setAlignment(Pos.CENTER);
             vbox0.setSpacing(20);
@@ -548,7 +548,22 @@ public class App extends Application{
             mainHbox.setSpacing(20);
 
 
-            button.setOnAction(actionEvent -> init(nrOfAnimals.getText(), genLimitField.getText(), eatingEnergyField.getText(), minEnergyToReproduceField.getText(), initEnergyField.getText(), takenEnergyEachDayField.getText(), globeField.getText(), newGrassesField.getText(), isItDeathFieldField.getText(),widthField.getText(), heightField.getText(), nField.getText(), someMadnessField.getText(), fullRandomnessField.getText()));
+            button.setOnAction(
+                    actionEvent -> init(nrOfAnimals.getText()  ,
+                            genLimitField.getText(),
+                            eatingEnergyField.getText(),
+                            minEnergyToReproduceField.getText(),
+                            initEnergyField.getText(),
+                            takenEnergyEachDayField.getText(),
+                            globeField.getText(),
+                            newGrassesField.getText(),
+                            isItDeathFieldField.getText(),
+                            widthField.getText(),
+                            heightField.getText(),
+                            nField.getText(),
+                            someMadnessField.getText(),
+                            fullRandomnessField.getText())
+            );
             Scene scene = new Scene(mainHbox, 400, 400);
 
             primaryStage.setScene(scene);
