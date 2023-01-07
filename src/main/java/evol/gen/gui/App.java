@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
@@ -19,6 +20,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +36,10 @@ public class App extends Application{
     private int height = 45;
     public Stage primaryStage;
 
+    public boolean isFileOpened = false;
+    public boolean isFirstLine = true;
+    public File csvFile;
+    public PrintWriter out;
 
     public final int gridFullWidth = 500;
     public final int gridFullHeight = 500;
@@ -184,6 +192,25 @@ public class App extends Application{
         if(sortedAnimals.size() == 0) return null;
         return sortedAnimals.get(0).position;
     }
+    copiedAnimal getBestAnimalObject(){
+        ArrayList<copiedAnimal> sortedAnimals = new ArrayList<>();
+
+        for (Vector2d key : this.myMap.animals.keySet()) {
+            PriorityQueue<Animal> queue = this.myMap.animals.get(key);
+            for (Animal animal : queue) {
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children,animal.position));
+            }
+            for (Animal animal : this.myMap.temporaryAnimalsArray) {
+                sortedAnimals.add(new copiedAnimal(animal.energy, animal.gen,animal.age,animal.children,animal.position));
+            }
+
+        }
+        Collections.sort(sortedAnimals,new CopiedAnimalComparator());
+        if(sortedAnimals.size() == 0) return null;
+        return sortedAnimals.get(0);
+    }
+
+
 
     public boolean checkingPositionOnMap(int j, int i,int rangeY){
         int posX = j-1;
@@ -292,24 +319,31 @@ public class App extends Application{
 
         //hbox.setAlignment(Pos.CENTER);
         hbox.setSpacing(20);
+        Boolean isThisEndOfDay = false;
         if(statusOfMap == 0){
             label = new Label("usuwanie zwlok");
+            isThisEndOfDay = false;
             label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(140, 0, 0, 1);");
         }else if(statusOfMap == 1){
             label = new Label("przemieszczanie sie");
             label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(242, 133, 0, 1);");
+            isThisEndOfDay = false;
         }else if(statusOfMap == 2){
             label = new Label("zjadanie traw");
             label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(137, 242, 0, 1);");
+            isThisEndOfDay = false;
         }else if(statusOfMap == 3){
             label = new Label("rozmnazanie sie!");
             label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(234, 0, 242, 1);");
+            isThisEndOfDay = false;
         }else if(statusOfMap == 4){
             label = new Label("koniec dnia");
             label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(40, 0, 242, 1);");
+            isThisEndOfDay = true;
         }else if(statusOfMap == 5){
             label = new Label("nowe roslinki");
             label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+            isThisEndOfDay = false;
         }
 
         VBox vbox = new VBox();
@@ -379,9 +413,10 @@ public class App extends Application{
         primaryStage.setMaximized(true);
         primaryStage.show();
         if(this.isTracked) this.updateAnimalDetailsMap();
-        System.out.println(this.myMap.toString());
-        System.out.println();
+        //System.out.println(this.myMap.toString());
+        //System.out.println();
         //System.out.println("System zakończył działanie");
+        this.addingStatisticsToFile(isThisEndOfDay);
     }
 
     public void threadExceptionHandler(){
@@ -408,7 +443,7 @@ public class App extends Application{
                       String minEnergyToReproduce, String initEnergy,
                       String takenEnergyEachDay, String globe, String newGrasses, String isItDeathField,
                       String width, String height, String n,
-                      String someMadness, String fullRandomness,String minimumGen,String maximumGen) {
+                      String someMadness, String fullRandomness,String minimumGen,String maximumGen,Boolean writing){
         int widthInt = Integer.parseInt(width);
         int heightInt = Integer.parseInt(height);
         int nInt = Integer.parseInt(n);
@@ -428,9 +463,13 @@ public class App extends Application{
 
         this.width = (int) (this.gridFullWidth)/widthInt;
         this.height = (int) (this.gridFullHeight)/heightInt;
+        if(writing){
+            this.isFileOpened = true;
+        }
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
+                if(isFileOpened) {out.close(); isFileOpened=false;}
                 Platform.exit();
                 System.exit(0);
             }
@@ -448,9 +487,36 @@ public class App extends Application{
            this.isTracked = false;
         });
     }
+    public int nrOfDays =0;
+    public void addingStatisticsToFile(boolean isThisEndOfDay){
+        if(!this.isFileOpened || !isThisEndOfDay) return;
+
+        if(isFirstLine){
+            this.out.printf("%s %s  %s  %s  %s  %s  %s  %s\n ",
+                    "nr dnia",
+                    "ilosc roslin",
+                    "ilosc zwierzat",
+                    "pola bez zwierzat",
+                    "puste pola",
+                    "najlepszy gen zwierzaka",
+                    "srednia energia zywych",
+                    "srednia dlugosc zycia");
+            this.isFirstLine = false;
+        }
+            this.out.printf("%d %d  %d  %d  %d  %s  %f  %f\n ",
+                    this.nrOfDays,
+                    this.myMap.getGrasses().size(),
+                    this.myMap.animalQuantity(),
+                    this.myMap.freePlaces(),
+                    this.myMap.emptyFields(),
+                    this.getBestAnimalObject().gen,
+                    this.myMap.averageEnergy(),
+                    this.myMap.averageDeathAge.averageAge());
+
+        this.nrOfDays++;
+    }
 
     public HBox createHboxParameters(Label label,TextField text){
-
         //TextField text = new TextField("20");
         text.setPadding(new Insets(10,20,10,20));
         text.setStyle("-fx-font: 15 arial;");
@@ -462,11 +528,25 @@ public class App extends Application{
         hbox.setSpacing(20);
         return hbox;
     }
+    public HBox createHboxParameters(Label label,CheckBox checkbox){
+        //TextField text = new TextField("20");
 
-    public void start(Stage primaryStage) {
+        //Label label = new Label("Starting number of animals");
+        checkbox.setStyle("-fx-font: 15 arial; -fx-text-fill: blue;");
+        label.setStyle("-fx-font: 15 arial;-fx-text-fill;");
+        HBox hbox = new HBox(label,checkbox);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setSpacing(20);
+        return hbox;
+    }
+
+
+    public void start(Stage primaryStage) throws FileNotFoundException {
         try {
             threadExceptionHandler();
 
+            this.csvFile = new File("statistics.csv");
+            this.out = new PrintWriter(this.csvFile);
 
             this.primaryStage = primaryStage;
             Button button = new Button("Start");
@@ -542,9 +622,9 @@ public class App extends Application{
             Label maximumGenLabel = new Label("Maksymalna liczba mutacji");
             HBox maximumGenHBox = createHboxParameters(maximumGenLabel, maximumGenField);
 
-            TextField excelNameField = new TextField("");
-            Label excelNameLabel = new Label("Nazwa pliku csv");
-            HBox excelNameHBox = createHboxParameters(excelNameLabel, excelNameField);
+            CheckBox checkBox = new CheckBox("zapisuj");
+            Label excelNameLabel = new Label("Zapisywanie statystyk do statistics.csv");
+            HBox excelNameHBox = createHboxParameters(excelNameLabel, checkBox);
 
 
             VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox, maximumGenHBox);
@@ -581,7 +661,8 @@ public class App extends Application{
                             someMadnessField.getText(),
                             fullRandomnessField.getText(),
                             minimalGenField.getText(),
-                            maximumGenField.getText())
+                            maximumGenField.getText(),
+                            checkBox.isSelected())
             );
             Scene scene = new Scene(mainHbox, 400, 400);
 
@@ -590,7 +671,11 @@ public class App extends Application{
             primaryStage.show();
 
 
-        } catch (IllegalArgumentException exception) {
+        } catch(FileNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
+        catch (IllegalArgumentException exception) {
             // kod obsługi wyjątku
             System.out.println(exception.getMessage());
 
@@ -598,5 +683,6 @@ public class App extends Application{
         catch (RuntimeException e){
             System.out.println(e.getMessage());
         }
+
     }
 }
