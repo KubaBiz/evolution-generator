@@ -39,16 +39,16 @@ public class GuiElementBox {
         this.imageView = new ImageView(image);
 
         if(element.toString().equals("*")){
-            this.imageView.setFitWidth(Math.max(width-16,16));
-            this.imageView.setFitHeight(Math.max(height-16,16));
+            this.imageView.setFitWidth(Math.max(width-16,6));
+            this.imageView.setFitHeight(Math.max(height-16,6));
             box.getChildren().addAll((Node) this.imageView);
             box.setAlignment(Pos.CENTER);
 
 
         }
         else{
-            this.imageView.setFitWidth(Math.max(width-4,22));
-            this.imageView.setFitHeight(Math.max(height-4,22));
+            this.imageView.setFitWidth(Math.max(width-4,6));
+            this.imageView.setFitHeight(Math.max(height-4,6));
 
             ColorAdjust monochrome = new ColorAdjust();
             monochrome.setSaturation(generateProperSaturation(element.getEnergy()));

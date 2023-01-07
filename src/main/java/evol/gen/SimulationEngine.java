@@ -84,8 +84,8 @@ public class SimulationEngine implements IEngine,Runnable {
                     }
 
                 }
-                this.observer.updateMap(1);
-                this.sleepNow(500);
+                //this.observer.updateMap(1);
+                //this.sleepNow(500);
 
             });
 

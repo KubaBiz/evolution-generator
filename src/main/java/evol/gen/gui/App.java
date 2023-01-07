@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -27,11 +28,13 @@ public class App extends Application{
 
     private GridPane grid = new GridPane();
     private GrassField myMap;
-    private final int width = 45;
-    private final int height = 45;
+    private  int width = 45;
+    private int height = 45;
     public Stage primaryStage;
 
 
+    public final int gridFullWidth = 500;
+    public final int gridFullHeight = 500;
     private final Object lock = new Object();
 
     public Thread threadEngine;
@@ -344,7 +347,12 @@ public class App extends Application{
             Vector2d pos = this.getBestAnimal();
             if(pos != null){
                 VBox result = drawObject(pos);
-                result.setStyle("-fx-background-color: red;");
+                result.setStyle("-fx-background-color: rgb(255, 191, 0)");
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setHue(0.15);
+                colorAdjust.setBrightness(-0.5);
+                colorAdjust.setSaturation(-0.5);
+                result.setEffect(colorAdjust);
                 grid.add(result, pos.x+1, rangeY-pos.y+1);
                 this.addEventHandler(result,new Vector2d(pos.x,pos.y));
 
@@ -365,7 +373,7 @@ public class App extends Application{
         buttonContainer.setMargin(newBtn,new Insets(10, 20, 20, 10));
         vbox.getChildren().addAll((Node) label,labelgrass,labelanimals,labelFreePlaces,emptySpace,this.fiveMostPopularGenes(),averageEnergy,averageLengOfLife,buttonContainer,this.getAnimalInfo());
         hbox.getChildren().addAll((Node) grid, vbox);
-
+        grid.setPrefSize(300, 400);
         Scene scene = new Scene(hbox, (rangeX+2)*width*45.5, (rangeY+2)*height*45.5);
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
@@ -417,6 +425,9 @@ public class App extends Application{
         this.myMap.fullRandomness = Boolean.parseBoolean(fullRandomness);
         this.myMap.minNrOfMutations = Integer.parseInt(minimumGen);
         this.myMap.maxNrOfMutations = Integer.parseInt(maximumGen);
+
+        this.width = (int) (this.gridFullWidth)/widthInt;
+        this.height = (int) (this.gridFullHeight)/heightInt;
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
