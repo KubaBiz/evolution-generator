@@ -8,9 +8,11 @@ public class SimulationEngine implements IEngine,Runnable {
 
     private final GrassField myMap;
     //private App observer;
-    private int moveDelay = 600;
+    public int moveDelay = 300;
     private final boolean isAppOpening;
     public boolean someMadness = false;
+
+    public boolean showJustDay = false;
     private App observer;
 
     public SimulationEngine(GrassField map, int initAnimals,App app) {
@@ -44,21 +46,33 @@ public class SimulationEngine implements IEngine,Runnable {
         // zwierzątka się zaczynają poruszać (tutaj zajdzie duzo roznych akcji)
         //warunek pętli: (poniewaz wiemy, ze kazdy zwierzak ma taką samą długość genomu, to wybierzmy jeden ze zwierzakow i dla niego robmy warunek)
 
-        this.observer.updateMap(0);
+        if(!showJustDay){
+            this.observer.updateMap(0);
+        }
         int counter = 0;
         boolean start = true;
         while(counter != -1 && this.myMap.animalQuantity() > 0){//jesli zwierzakow nie ma to nie ma sensu uruchamiac petli, dzialamy do ostatniego dnia! (tzn. do dlugosci genomu)
             if(!start) {
                 System.out.println("przed usuwaniem zwlok: ");
                 System.out.println(this.myMap);
-                this.observer.updateMap(0);
-                this.sleepNow(moveDelay);
+                if(!showJustDay){
+                    this.observer.updateMap(0);
+                    this.sleepNow(moveDelay);
+                }
                 this.myMap.removingCorpse();
-                this.sleepNow(moveDelay);
+                if(!showJustDay){
+                    this.sleepNow(moveDelay);
+                }
+
+
+
             }
             start = false;
-            this.observer.updateMap(1);
-            this.sleepNow(moveDelay);
+            if(!showJustDay){
+                this.observer.updateMap(1);
+                this.sleepNow(moveDelay);
+            }
+
             //System.out.println("po usunieciu zwlok: ");
             //System.out.println(this.myMap);
             //przemieszczanie sie!!! ---------------------------------------------
@@ -88,48 +102,63 @@ public class SimulationEngine implements IEngine,Runnable {
                 //this.sleepNow(500);
 
             });
+            if(!showJustDay){
+                this.observer.updateMap(1);
+                this.sleepNow(moveDelay);
+            }
 
-            this.observer.updateMap(1);
-            this.sleepNow(moveDelay);
             this.myMap.clearMovedValues();
             // koniec funkcjonalnosci zwiazanej z przemieszczaniem sie!!------------------------
             //System.out.println("po przemieszczeniu sie");
-            this.observer.updateMap(2);
-            this.sleepNow(moveDelay);
+            if(!showJustDay){
+                this.observer.updateMap(2);
+                this.sleepNow(moveDelay);
+            }
             this.myMap.eatingTime();
-            this.observer.updateMap(2);
-            this.sleepNow(moveDelay);
-            this.observer.updateMap(3);
-            this.sleepNow(moveDelay);
+            if(!showJustDay){
+                this.observer.updateMap(2);
+                this.sleepNow(moveDelay);
+                this.observer.updateMap(3);
+                this.sleepNow(moveDelay);
+            }
+
             int oldNumberOfAnimals = this.myMap.animalQuantity(); //jesli są nowe zwierzaki na mapie, to muszą przejść cały swoj genom!
             this.myMap.reproducingTime();
             counter = this.clearCounter(oldNumberOfAnimals,counter); // jesli pojawi sie nowe zwierze na mapie to musi wykonac caly swoj genom, wiec resetujemy counter;
             // inne zwierzaki będą powtarzać swoje sekwencje.
-            this.observer.updateMap(3);
-            this.sleepNow(moveDelay);
-            this.observer.updateMap(5);
-            this.sleepNow(moveDelay);
+            if(!showJustDay){
+                this.observer.updateMap(3);
+                this.sleepNow(moveDelay);
+                this.observer.updateMap(5);
+                this.sleepNow(moveDelay);
+            }
+
             this.myMap.createProperNumberOfGrass(-1);
-            this.observer.updateMap(5);
+
+            if(!showJustDay){
+                this.observer.updateMap(5);
+            }
             this.sleepNow(moveDelay);
             this.observer.updateMap(4);
             this.sleepNow(moveDelay);
             this.myMap.aging();
-            this.sleepNow(moveDelay);
+            if(!showJustDay){
+                this.sleepNow(moveDelay);
+            }
+
             //System.out.println("-------INFO-----");
-            this.myMap.printInfo();
+            //this.myMap.printInfo();
             //System.out.println(this.myMap);
             //System.out.println("-------INFO END-----");
 
             //System.out.println("Po wykonanych pracach, przed starzeniem sie:");
             //System.out.println(this.myMap);
-
             this.observer.updateMap(4);
             counter++;
         }
         System.out.println("Ostateczny stan:");
-        System.out.println(this.myMap);
-        this.sleepNow(2000);
+        //System.out.println(this.myMap);
+        //this.sleepNow(2000);
         Platform.exit();
         System.exit(0);
 

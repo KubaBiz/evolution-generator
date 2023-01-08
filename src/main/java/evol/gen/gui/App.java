@@ -438,7 +438,7 @@ public class App extends Application{
                       String minEnergyToReproduce, String initEnergy,
                       String takenEnergyEachDay, String globe, String newGrasses, String isItDeathField,
                       String width, String height, String n,
-                      String someMadness, String fullRandomness,String minimumGen,String maximumGen,Boolean writing){
+                      String someMadness, String fullRandomness,String minimumGen,String maximumGen,Boolean writing, String cycle,String delay){
         int widthInt = Integer.parseInt(width);
         int heightInt = Integer.parseInt(height);
         int nInt = Integer.parseInt(n);
@@ -471,6 +471,8 @@ public class App extends Application{
         });
 
         this.engine = new SimulationEngine(myMap, Integer.parseInt(nrOfAnimals), this);
+        this.engine.moveDelay = Integer.parseInt(delay);
+        this.engine.showJustDay = cycle.equals("Pokaz z cyklem dnia") ? false : true;
         this.engine.someMadness = someMadness.equals("nieco szalenstwa") ? true : false;
         this.threadEngine = new Thread(engine);
 
@@ -488,14 +490,14 @@ public class App extends Application{
 
         if(isFirstLine){
             this.out.printf("%s %s  %s  %s  %s  %s  %s  %s\n ",
-                    "nr dnia",
-                    "ilosc roslin",
-                    "ilosc zwierzat",
-                    "pola bez zwierzat",
-                    "puste pola",
-                    "najlepszy gen zwierzaka",
-                    "srednia energia zywych",
-                    "srednia dlugosc zycia");
+                    " nr-dnia",
+                    "ilosc-roslin",
+                    "ilosc-zwierzat",
+                    "pola-bez-zwierzat",
+                    "puste-pola",
+                    "najlepszy-gen-zwierzaka",
+                    "srednia-energia-zywych",
+                    "srednia-dlugosc-zycia");
             this.isFirstLine = false;
         }
             this.out.printf("%d %d  %d  %d  %d  %s  %f  %f\n ",
@@ -683,15 +685,28 @@ public class App extends Application{
 
             ComboBox<String> properConfig = new ComboBox<>();
             properConfig.getItems().addAll("1", "2", "3");
-            Label properConfigLabel = new Label("Wariant mutacji");
+            Label properConfigLabel = new Label("ustal konfiguracje");
             HBox properConfigBox = createHboxParameters(properConfigLabel, properConfig);
+
+
+            ComboBox<String> delayBox = new ComboBox<>();
+            delayBox.getItems().addAll("250", "300", "400","500","600","800");
+            Label DelayLabel = new Label("ustal opoznienie");
+            delayBox.setValue("300");
+            HBox delayHbox = createHboxParameters(DelayLabel, delayBox);
+
+            ComboBox<String> isCycleBox = new ComboBox<>();
+            isCycleBox.getItems().addAll("Pokaz z cyklem dnia", "Pokaz ogolnie dni");
+            Label isCycleLabel = new Label("Sposob przedstawiania dnia");
+            isCycleBox.setValue("Pokaz z cyklem dnia");
+            HBox isCycleHBox = createHboxParameters(isCycleLabel, isCycleBox);
 
 
             VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox, maximumGenHBox);
             vbox0.setAlignment(Pos.CENTER);
             vbox0.setSpacing(20);
 
-            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox, minimalGenHBox );
+            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox, minimalGenHBox,isCycleHBox,delayHbox);
             vbox1.setAlignment(Pos.CENTER);
             vbox1.setSpacing(20);
 
@@ -760,7 +775,9 @@ public class App extends Application{
                             mutationWariant.getValue(),
                             minimalGenField.getText(),
                             maximumGenField.getText(),
-                            checkBox.isSelected())
+                            checkBox.isSelected(),
+                            isCycleBox.getValue(),
+                            delayBox.getValue())
             );
             Scene scene = new Scene(mainHbox, 400, 400);
 
