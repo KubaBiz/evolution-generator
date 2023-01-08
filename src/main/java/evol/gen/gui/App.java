@@ -438,7 +438,7 @@ public class App extends Application{
                       String minEnergyToReproduce, String initEnergy,
                       String takenEnergyEachDay, String globe, String newGrasses, String isItDeathField,
                       String width, String height, String n,
-                      String someMadness, String fullRandomness,String minimumGen,String maximumGen,Boolean writing, String cycle,String delay){
+                      String someMadness, String fullRandomness,String minimumGen,String maximumGen,Boolean writing,String delay){
         int widthInt = Integer.parseInt(width);
         int heightInt = Integer.parseInt(height);
         int nInt = Integer.parseInt(n);
@@ -472,7 +472,7 @@ public class App extends Application{
 
         this.engine = new SimulationEngine(myMap, Integer.parseInt(nrOfAnimals), this);
         this.engine.moveDelay = Integer.parseInt(delay);
-        this.engine.showJustDay = cycle.equals("Pokaz z cyklem dnia") ? false : true;
+        //this.engine.showJustDay = cycle.equals("Pokaz z cyklem dnia") ? false : true;
         this.engine.someMadness = someMadness.equals("nieco szalenstwa") ? true : false;
         this.threadEngine = new Thread(engine);
 
@@ -695,18 +695,19 @@ public class App extends Application{
             delayBox.setValue("300");
             HBox delayHbox = createHboxParameters(DelayLabel, delayBox);
 
-            ComboBox<String> isCycleBox = new ComboBox<>();
-            isCycleBox.getItems().addAll("Pokaz z cyklem dnia", "Pokaz ogolnie dni");
-            Label isCycleLabel = new Label("Sposob przedstawiania dnia");
-            isCycleBox.setValue("Pokaz z cyklem dnia");
-            HBox isCycleHBox = createHboxParameters(isCycleLabel, isCycleBox);
+//            ComboBox<String> isCycleBox = new ComboBox<>();
+//            isCycleBox.getItems().addAll("Pokaz z cyklem dnia", "Pokaz ogolnie dni");
+//            Label isCycleLabel = new Label("Sposob przedstawiania dnia");
+//            isCycleBox.setValue("Pokaz z cyklem dnia");
+//            HBox isCycleHBox = createHboxParameters(isCycleLabel, isCycleBox);
+
 
 
             VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox, maximumGenHBox);
             vbox0.setAlignment(Pos.CENTER);
             vbox0.setSpacing(20);
 
-            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox, minimalGenHBox,isCycleHBox,delayHbox);
+            VBox vbox1 = new VBox(nrOfAnimalsHBox, initEnergyHBox,minEnergyToReproduceHBox, genLimitHBox, takenEnergyEachDayHBox, minimalGenHBox,delayHbox);
             vbox1.setAlignment(Pos.CENTER);
             vbox1.setSpacing(20);
 
@@ -776,7 +777,6 @@ public class App extends Application{
                             minimalGenField.getText(),
                             maximumGenField.getText(),
                             checkBox.isSelected(),
-                            isCycleBox.getValue(),
                             delayBox.getValue())
             );
             Scene scene = new Scene(mainHbox, 400, 400);
