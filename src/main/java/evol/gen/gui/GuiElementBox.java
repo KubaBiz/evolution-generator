@@ -1,6 +1,8 @@
 package evol.gen.gui;
 
 import evol.gen.*;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -8,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.FontWeight;
 
@@ -41,7 +44,12 @@ public class GuiElementBox {
         if(element.toString().equals("*")){
             this.imageView.setFitWidth(Math.max(width-16,6));
             this.imageView.setFitHeight(Math.max(height-16,6));
-            box.getChildren().addAll((Node) this.imageView);
+            label = new Label(element.getPosition().toString());
+
+
+            label.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
+            StackPane stack = new StackPane(this.imageView,label);
+            box.getChildren().addAll((Node) stack);
             box.setAlignment(Pos.CENTER);
 
 

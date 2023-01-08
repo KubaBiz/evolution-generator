@@ -150,7 +150,9 @@ public class App extends Application{
         Collections.sort(sortedAnimals,new CopiedAnimalComparator());
 
         HBox hbox = new HBox();
-        Label label = new Label("5 najpopularniejszych genomow: ");
+        int leng = sortedAnimals.size() > 5 ? 5 : sortedAnimals.size();
+        String mess = leng == 1 ? " najpopularniejszy genom: " : " najpopularniejszych genomow: ";
+        Label label = new Label(leng+ mess);
         label.setStyle("-fx-font: 18 arial;-fx-font-weight:bold;");
         hbox.getChildren().add(label);
         hbox.setSpacing(3);
@@ -272,7 +274,7 @@ public class App extends Application{
     private void drawMap(int statusOfMap){
         grid.setGridLinesVisible(true);
         //grid.setAlignment(Pos.CENTER);
-        grid.setStyle("-fx-padding: 100 100 100 100;");
+        grid.setStyle("-fx-padding: 25 25 25 25;");
         GrassField myMap = this.myMap;
         int rangeY = myMap.getTopRight().y;
         int rangeX = myMap.getTopRight().x;
