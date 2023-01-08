@@ -61,9 +61,16 @@ public class GuiElementBox {
             ColorAdjust monochrome = new ColorAdjust();
             monochrome.setSaturation(generateProperSaturation(element.getEnergy()));
             this.imageView.setEffect(monochrome);
-
             Animal animal = (Animal) element;
-            box.getChildren().addAll((Node) this.imageView);
+            //int nrOfAnimals = ((GrassField)animal.myMap).animals.get(animal.position).size();
+            label = new Label(element.getPosition().toString());
+            label.setStyle("-fx-font: 10 arial;");
+            StackPane stack = new StackPane(this.imageView,label);
+            label.setAlignment(Pos.BOTTOM_CENTER);
+            label.setTranslateY(10);
+
+
+            box.getChildren().addAll((Node) stack);
             box.setAlignment(Pos.CENTER);
         }
 
