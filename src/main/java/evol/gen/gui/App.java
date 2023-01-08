@@ -5,6 +5,8 @@ import evol.gen.*;
 import evol.gen.GrassField;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -603,6 +605,36 @@ public class App extends Application{
         try {
             threadExceptionHandler();
 
+            //odczyt z pliku!!!
+            BufferedReader reader = new BufferedReader(new FileReader("config.txt"));
+            String line;
+            HashMap<String, String> keyValues = new HashMap<>();
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("-")) {
+                    configurations.add(keyValues);
+                    keyValues = new HashMap<>();
+                } else {
+                    String[] parts = line.split(":");
+                    String key = parts[0];
+                    String value = parts[1];
+                    keyValues.put(key, value);
+                }
+            }
+            configurations.add(keyValues);
+            reader.close();
+            int i = 0;
+            for (HashMap<String, String> config : configurations) {
+                for (Map.Entry<String, String> entry : config.entrySet()) {
+                    System.out.println(i+" -> " + entry.getKey() + ": " + entry.getValue());
+                }
+                i++;
+                System.out.println(" ");
+            }
+
+            //koniec odczytu z pliku!
+
+
+
             this.csvFile = new File("statistics.csv");
             this.out = new PrintWriter(this.csvFile);
 
@@ -704,10 +736,18 @@ public class App extends Application{
             Label excelNameLabel = new Label("Zapisywanie statystyk do statistics.csv");
             HBox excelNameHBox = createHboxParameters(excelNameLabel, checkBox);
 
-            ComboBox<String> properConfig = new ComboBox<>();
-            properConfig.getItems().addAll("1", "2", "3");
+
+            ArrayList<String> arrConfig = new ArrayList<>();
+            for(int ind = 0; ind < configurations.size()-1;ind++){
+                arrConfig.add(String.valueOf(ind+1));
+            }
+            ObservableList<String> options = FXCollections.observableArrayList(arrConfig);
+            ComboBox<String> properConfig = new ComboBox<>(options);
+
+            //properConfig.getItems().addAll("1", "2", "3");
             Label properConfigLabel = new Label("ustal konfiguracje");
             HBox properConfigBox = createHboxParameters(properConfigLabel, properConfig);
+
 
 
             ComboBox<String> delayBox = new ComboBox<>();
@@ -740,33 +780,7 @@ public class App extends Application{
             mainHbox.setAlignment(Pos.CENTER);
             mainHbox.setSpacing(20);
 
-            //odczyt z pliku!!!
-            BufferedReader reader = new BufferedReader(new FileReader("config.txt"));
-            String line;
-            HashMap<String, String> keyValues = new HashMap<>();
-            while ((line = reader.readLine()) != null) {
-                if (line.equals("-")) {
-                    configurations.add(keyValues);
-                    keyValues = new HashMap<>();
-                } else {
-                    String[] parts = line.split(":");
-                    String key = parts[0];
-                    String value = parts[1];
-                    keyValues.put(key, value);
-                }
-            }
-            configurations.add(keyValues);
-            reader.close();
-            int i = 0;
-            for (HashMap<String, String> config : configurations) {
-                for (Map.Entry<String, String> entry : config.entrySet()) {
-                    System.out.println(i+" -> " + entry.getKey() + ": " + entry.getValue());
-                }
-                i++;
-                System.out.println(" ");
-            }
 
-            //koniec odczytu z pliku!
 
 
             //properConfig.setValue("0");
