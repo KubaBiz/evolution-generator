@@ -17,16 +17,12 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.io.*;
+import java.util.*;
 
 public class App extends Application{
 
+    private ArrayList<HashMap<String,String>> configurations = new ArrayList<>();
     private GridPane grid = new GridPane();
     private GrassField myMap;
     private  int width = 45;
@@ -550,6 +546,41 @@ public class App extends Application{
         hbox.setSpacing(20);
         return hbox;
     }
+
+    public void setProperConfiguration(String index,TextField nrOfAnimals, TextField genLimitField, TextField eatingEnergyField,
+                                       TextField minEnergyToReproduceField, TextField initEnergyField, TextField takenEnergyEachDayField,
+                                       ComboBox<String> mapWariantBox, TextField newGrassesField, ComboBox<String> growingGrasses,
+                                       TextField widthField, TextField heightField, TextField nField, ComboBox<String> madnessBox,
+                                       ComboBox<String> mutationWariant, TextField minimalGenField, TextField maximumGenField,CheckBox checkbox)
+    {
+       int i = Integer.valueOf(index);
+       //System.out.println(i);
+       nrOfAnimals.setText(configurations.get(i).get("nrOfAnimals"));
+        genLimitField.setText(configurations.get(i).get("genLimit"));
+        eatingEnergyField.setText(configurations.get(i).get("eatingEnergy"));
+        minEnergyToReproduceField.setText(configurations.get(i).get("minEnergyToReproduce"));
+        initEnergyField.setText(configurations.get(i).get("initEnergy"));
+        takenEnergyEachDayField.setText(configurations.get(i).get("takenEnergyEachDay"));
+        mapWariantBox.setValue(configurations.get(i).get("mapWariant"));
+        newGrassesField.setText(configurations.get(i).get("newGrasses"));
+        growingGrasses.setValue(configurations.get(i).get("growingGrasses"));
+        widthField.setText(configurations.get(i).get("width"));
+        heightField.setText(configurations.get(i).get("height"));
+        nField.setText(configurations.get(i).get("nrOfGrasses"));
+        madnessBox.setValue(configurations.get(i).get("madness"));
+        mutationWariant.setValue(configurations.get(i).get("mutationWariant"));
+        minimalGenField.setText(configurations.get(i).get("minimalGen"));
+        maximumGenField.setText(configurations.get(i).get("maximumGen"));
+
+        String checkBoxValue = configurations.get(i).get("checkBox");
+        if (checkBoxValue.equals("true")) {
+            checkbox.setSelected(true);
+        }else{
+            checkbox.setSelected(false);
+        }
+
+    }
+
     public void start(Stage primaryStage) throws FileNotFoundException {
         try {
             threadExceptionHandler();
@@ -631,7 +662,7 @@ public class App extends Application{
 
             ComboBox<String> mutationWariant = new ComboBox<>();
             mutationWariant.getItems().addAll("pelna losowosc", "lekka korekta");
-            mutationWariant.setValue("pelna predestynacja");
+            mutationWariant.setValue("pelna losowosc");
             Label fullRandomnessLabel = new Label("Wariant mutacji");
 
             HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, mutationWariant);
@@ -650,6 +681,11 @@ public class App extends Application{
             Label excelNameLabel = new Label("Zapisywanie statystyk do statistics.csv");
             HBox excelNameHBox = createHboxParameters(excelNameLabel, checkBox);
 
+            ComboBox<String> properConfig = new ComboBox<>();
+            properConfig.getItems().addAll("1", "2", "3");
+            Label properConfigLabel = new Label("Wariant mutacji");
+            HBox properConfigBox = createHboxParameters(properConfigLabel, properConfig);
+
 
             VBox vbox0 = new VBox(button, globeHBox, isItDeathFieldHBox, someMadnessHBox, fullRandomnessHBox, maximumGenHBox);
             vbox0.setAlignment(Pos.CENTER);
@@ -659,14 +695,52 @@ public class App extends Application{
             vbox1.setAlignment(Pos.CENTER);
             vbox1.setSpacing(20);
 
-            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, newGrassesHBox, eatingEnergyHBox, excelNameHBox);
+            VBox vbox2 = new VBox(widthHBox, heightHBox, nHBox, newGrassesHBox, eatingEnergyHBox, excelNameHBox,properConfigBox);
             vbox2.setAlignment(Pos.CENTER);
             vbox2.setSpacing(20);
-
 
             HBox mainHbox = new HBox(vbox1,vbox0,vbox2);
             mainHbox.setAlignment(Pos.CENTER);
             mainHbox.setSpacing(20);
+
+            //odczyt z pliku!!!
+            BufferedReader reader = new BufferedReader(new FileReader("config.txt"));
+            String line;
+            HashMap<String, String> keyValues = new HashMap<>();
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("-")) {
+                    configurations.add(keyValues);
+                    keyValues = new HashMap<>();
+                } else {
+                    String[] parts = line.split(":");
+                    String key = parts[0];
+                    String value = parts[1];
+                    keyValues.put(key, value);
+                }
+            }
+            configurations.add(keyValues);
+            reader.close();
+            int i = 0;
+            for (HashMap<String, String> config : configurations) {
+                for (Map.Entry<String, String> entry : config.entrySet()) {
+                    System.out.println(i+" -> " + entry.getKey() + ": " + entry.getValue());
+                }
+                i++;
+                System.out.println(" ");
+            }
+
+            //koniec odczytu z pliku!
+
+
+            //properConfig.setValue("0");
+
+            properConfig.setOnAction(event -> {
+                String selectedValue = properConfig.getValue();
+                setProperConfiguration(selectedValue, nrOfAnimals, genLimitField, eatingEnergyField,
+                        minEnergyToReproduceField, initEnergyField, takenEnergyEachDayField,
+                        mapWariantBox, newGrassesField, growingGrasses, widthField, heightField,
+                        nField, madnessBox, mutationWariant, minimalGenField, maximumGenField,checkBox);
+            });
 
 
             button.setOnAction(
@@ -695,14 +769,15 @@ public class App extends Application{
             primaryStage.show();
 
 
-        } catch(FileNotFoundException e){
+        }
+        catch(FileNotFoundException e){
+            System.out.println(e.getMessage());
+        }catch(IOException e){
             System.out.println(e.getMessage());
         }
-
         catch (IllegalArgumentException exception) {
             // kod obsługi wyjątku
             System.out.println(exception.getMessage());
-
         }
         catch (RuntimeException e){
             System.out.println(e.getMessage());
