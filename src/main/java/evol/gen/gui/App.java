@@ -252,7 +252,7 @@ public class App extends Application{
         children.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(160, 160, 160, 1);");
         Label days= new Label("ilosc przezytych dni: "+this.trackedAnimal.age);
         days.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(192, 192, 192, 1);");
-        String isDeadMessage = this.trackedAnimal.energy == 0 ?  "zmarło w wieku "+this.trackedAnimal.age : "nie zmarlo";
+        String isDeadMessage = this.trackedAnimal.energy == 0 ?  "zmarlo w dniu "+this.trackedAnimal.age : "nie zmarlo";
         Label isDead= new Label(isDeadMessage);
         isDead.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(255, 71, 71, 1);");
         vbox.getChildren().addAll((Node)pos, gen,activatedGen,energy,eatenGrass,children,days,isDead);
@@ -583,6 +583,22 @@ public class App extends Application{
 
     }
 
+    public void restrictTextField(TextField textField, int minValue, int maxValue) {
+        TextFormatter<Integer> formatter = new TextFormatter<>(c -> {
+            if (c.getControlNewText().matches("\\d*")) {
+                int value = c.getControlNewText().isEmpty() ? 0 : Integer.parseInt(c.getControlNewText());
+                if (value >= minValue && value <= maxValue) {
+                    return c;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        });
+        textField.setTextFormatter(formatter);
+    }
+
     public void start(Stage primaryStage) throws FileNotFoundException {
         try {
             threadExceptionHandler();
@@ -598,29 +614,33 @@ public class App extends Application{
             TextField nrOfAnimals = new TextField("20");
             Label label_nrOfAnimals = new Label("Starting number of animals");
             HBox nrOfAnimalsHBox = createHboxParameters(label_nrOfAnimals, nrOfAnimals);
+            restrictTextField(nrOfAnimals,1,150);
 
             TextField genLimitField = new TextField("10");
             Label genLimitLabel = new Label("Gen length");
             HBox genLimitHBox = createHboxParameters(genLimitLabel, genLimitField);
-
+            restrictTextField(genLimitField,1,15);
 
             TextField eatingEnergyField = new TextField("100");
             Label eatingEnergyLabel = new Label("Eating energy");
             HBox eatingEnergyHBox = createHboxParameters(eatingEnergyLabel, eatingEnergyField);
+            restrictTextField(eatingEnergyField,1,1000);
 
             TextField minEnergyToReproduceField = new TextField("50");
             Label minEnergyToReproduceLabel = new Label("Minimum energy to reproduce");
             HBox minEnergyToReproduceHBox = createHboxParameters(minEnergyToReproduceLabel, minEnergyToReproduceField);
+            restrictTextField(minEnergyToReproduceField,1,1000);
+
 
             TextField initEnergyField = new TextField("50");
             Label initEnergyLabel = new Label("Initial energy");
             HBox initEnergyHBox = createHboxParameters(initEnergyLabel, initEnergyField);
-
+            restrictTextField(initEnergyField,1,1000);
 
             TextField takenEnergyEachDayField = new TextField("25");
             Label takenEnergyEachDayLabel = new Label("Taken energy each day");
             HBox takenEnergyEachDayHBox = createHboxParameters(takenEnergyEachDayLabel, takenEnergyEachDayField);
-
+            restrictTextField(takenEnergyEachDayField,1,1000);
 
             Label globeLabel = new Label("Wariant mapy");
             ComboBox<String> mapWariantBox = new ComboBox<>();
@@ -632,7 +652,7 @@ public class App extends Application{
             TextField newGrassesField = new TextField("40");
             Label newGrassesLabel = new Label("New grasses");
             HBox newGrassesHBox = createHboxParameters(newGrassesLabel, newGrassesField);
-
+            restrictTextField(newGrassesField,1,150);
 
             Label isItDeathFieldLabel = new Label("wzrost roslin");
             ComboBox<String> growingGrasses = new ComboBox<>();
@@ -645,11 +665,12 @@ public class App extends Application{
             TextField widthField = new TextField("10");
             Label widthLabel = new Label("Width");
             HBox widthHBox = createHboxParameters(widthLabel, widthField);
+            restrictTextField(widthField,2,30);
 
             TextField heightField = new TextField("10");
             Label heightLabel = new Label("Height");
             HBox heightHBox = createHboxParameters(heightLabel, heightField);
-
+            restrictTextField(heightField,2,30);
             TextField nField = new TextField("10");
             Label nLabel = new Label("Initial grasses");
             HBox nHBox = createHboxParameters(nLabel, nField);
@@ -674,11 +695,11 @@ public class App extends Application{
             TextField minimalGenField = new TextField("0");
             Label minimalGenLabel = new Label("Minimalna liczba mutacji");
             HBox minimalGenHBox = createHboxParameters(minimalGenLabel, minimalGenField);
-
+            restrictTextField(minimalGenField,0,15);
             TextField maximumGenField = new TextField("10");
             Label maximumGenLabel = new Label("Maksymalna liczba mutacji");
             HBox maximumGenHBox = createHboxParameters(maximumGenLabel, maximumGenField);
-
+            restrictTextField(minimalGenField,0,15);
             CheckBox checkBox = new CheckBox("zapisuj");
             Label excelNameLabel = new Label("Zapisywanie statystyk do statistics.csv");
             HBox excelNameHBox = createHboxParameters(excelNameLabel, checkBox);
