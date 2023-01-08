@@ -460,8 +460,8 @@ public class App extends Application{
         this.myMap.minNrOfMutations = Integer.parseInt(minimumGen);
         this.myMap.maxNrOfMutations = Integer.parseInt(maximumGen);
 
-        this.width = (int) (this.gridFullWidth)/widthInt;
-        this.height = (int) (this.gridFullHeight)/heightInt;
+        this.width = (int) (this.gridFullWidth)/(widthInt+1);
+        this.height = (int) (this.gridFullHeight)/(heightInt+1);
         if(writing){
             this.isFileOpened = true;
         }

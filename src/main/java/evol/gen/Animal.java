@@ -21,6 +21,7 @@ public class Animal extends AbstractWorldMapElement{
 
     public int eatenGrass = 0;
 
+    public boolean isJustBorn = true;
 public final int id;
     protected final List<IPositionChangeObserver> observers = new ArrayList<>();
     private MapDirection orientation =  MapDirection.NORTH;
@@ -35,6 +36,7 @@ public final int id;
             this.energy = ((GrassField) this.myMap).initEnergy;
             this.id = ((GrassField) this.myMap).addId();
             this.fullRandomness = this.myMap.setFullRandomness();
+            this.isJustBorn = false;
 
     }
     public String createNewGen(Animal Animal1,Animal Animal2){
@@ -61,6 +63,7 @@ public final int id;
         this.energy = ((GrassField) this.myMap).initEnergy;
         this.id = ((GrassField) this.myMap).addId();
         this.fullRandomness = this.myMap.setFullRandomness();
+        this.isJustBorn = true;
     }
 
     public String parentRandomGen(double probability,String sequence){ // O(n)

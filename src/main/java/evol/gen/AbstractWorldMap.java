@@ -287,7 +287,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             while (iterator.hasNext()) {
                 Animal animal = iterator.next();
                 animal.increaseAge();
-                animal.addEnergy(-takenEnergyEachDay);
+                if(!animal.isJustBorn) animal.addEnergy(-takenEnergyEachDay);
+                else animal.isJustBorn = false;
                 if(animal.energy <= 0){
                     animal.isDead = true;
                     this.averageDeathAge.addDeadAnimal(animal);
