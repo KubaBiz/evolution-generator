@@ -11,10 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -41,8 +38,8 @@ public class App extends Application{
     public File csvFile;
     public PrintWriter out;
 
-    public final int gridFullWidth = 500;
-    public final int gridFullHeight = 500;
+    public final int gridFullWidth = 700;
+    public final int gridFullHeight = 700;
     private final Object lock = new Object();
 
     public Thread threadEngine;
@@ -134,7 +131,7 @@ public class App extends Application{
     }
 
 
-    public HBox fiveMostPopularGenes(){
+    public VBox fiveMostPopularGenes(){
         ArrayList<copiedAnimal> sortedAnimals = new ArrayList<>();
 
         for (Vector2d key : this.myMap.animals.keySet()) {
@@ -149,33 +146,33 @@ public class App extends Application{
         }
         Collections.sort(sortedAnimals,new CopiedAnimalComparator());
 
-        HBox hbox = new HBox();
+        VBox vbox = new VBox();
         int leng = sortedAnimals.size() > 5 ? 5 : sortedAnimals.size();
         String mess = leng == 1 ? " najpopularniejszy genom: " : " najpopularniejszych genomow: ";
         Label label = new Label(leng+ mess);
         label.setStyle("-fx-font: 18 arial;-fx-font-weight:bold;");
-        hbox.getChildren().add(label);
-        hbox.setSpacing(3);
+        vbox.getChildren().add(label);
+        vbox.setSpacing(3);
         for(int i =0; i < Math.min(sortedAnimals.size(),5);i++){
             copiedAnimal animal = sortedAnimals.get(i);
-            VBox vbox = new VBox();
-            vbox.setSpacing(4);
+            HBox hbox = new HBox();
+            hbox.setSpacing(4);
 
             label = new Label(animal.gen);
             label.setStyle("-fx-font: 14 arial;-fx-font-weight:bold;");
             label.setPadding(new Insets(0,5,0,5));
             label.setAlignment(Pos.CENTER);
-            vbox.getChildren().add(label);
+            hbox.getChildren().add(label);
 
             Label label0 = new Label("("+animal.energy+")");
             label0.setStyle("-fx-font: 14 arial;-fx-font-weight:bold;");
             label0.setPadding(new Insets(0,5,0,5));
             label0.setAlignment(Pos.CENTER);
-            vbox.getChildren().add(label0);
+            hbox.getChildren().add(label0);
 
-            hbox.getChildren().add(vbox);
+            vbox.getChildren().add(hbox);
         }
-        return hbox;
+        return vbox;
     }
     Vector2d getBestAnimal(){
         ArrayList<copiedAnimal> sortedAnimals = new ArrayList<>();
@@ -274,7 +271,7 @@ public class App extends Application{
     private void drawMap(int statusOfMap){
         grid.setGridLinesVisible(true);
         //grid.setAlignment(Pos.CENTER);
-        grid.setStyle("-fx-padding: 25 25 25 25;");
+        grid.setStyle("-fx-padding: 10 10 10 10;");
         GrassField myMap = this.myMap;
         int rangeY = myMap.getTopRight().y;
         int rangeX = myMap.getTopRight().x;
@@ -325,48 +322,48 @@ public class App extends Application{
         if(statusOfMap == 0){
             label = new Label("usuwanie zwlok");
             isThisEndOfDay = false;
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(140, 0, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(140, 0, 0, 1);");
         }else if(statusOfMap == 1){
             label = new Label("przemieszczanie sie");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(242, 133, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(242, 133, 0, 1);");
             isThisEndOfDay = false;
         }else if(statusOfMap == 2){
             label = new Label("zjadanie traw");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(137, 242, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(137, 242, 0, 1);");
             isThisEndOfDay = false;
         }else if(statusOfMap == 3){
             label = new Label("rozmnazanie sie!");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(234, 0, 242, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(234, 0, 242, 1);");
             isThisEndOfDay = false;
         }else if(statusOfMap == 4){
             label = new Label("koniec dnia");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(40, 0, 242, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(40, 0, 242, 1);");
             isThisEndOfDay = true;
         }else if(statusOfMap == 5){
             label = new Label("nowe roslinki");
-            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+            label.setStyle("-fx-padding: 80 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
             isThisEndOfDay = false;
         }
 
         VBox vbox = new VBox();
         Label labelgrass = new Label("Ilosc roslinek:"+this.myMap.getGrasses().size());
-        labelgrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
+        labelgrass.setStyle("-fx-padding: 20 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(34, 255, 0, 1);");
         Label labelanimals = new Label("Ilosc zwierzatek: "+this.myMap.animalQuantity());
-        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(250, 189, 47, 1);");
+        labelanimals.setStyle("-fx-padding: 20 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(250, 189, 47, 1);");
 
         Label labelFreePlaces= new Label("Ilosc wolnych miejsc (bez zwierzat): "+this.myMap.freePlaces());
-        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(121, 85, 72, 1);");
+        labelFreePlaces.setStyle("-fx-padding: 20 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(121, 85, 72, 1);");
 
         Label emptySpace= new Label("Ilosc wolnych miejsc (puste pola): "+this.myMap.emptyFields());
-        emptySpace.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(33, 150, 243, 1);");
+        emptySpace.setStyle("-fx-padding: 20 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(33, 150, 243, 1);");
 
 
 
         Label averageLengOfLife= new Label("srednia dlugosc zycia (dla martwych): "+this.myMap.averageDeathAge.averageAge()+" dni");
-        averageLengOfLife.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(89, 54, 0, 1);");
+        averageLengOfLife.setStyle("-fx-padding: 20 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(89, 54, 0, 1);");
 
         Label averageEnergy= new Label("srednia energia (dla zywych): "+this.myMap.averageEnergy());
-        averageEnergy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 16 arial;-fx-font-weight:bold;-fx-text-fill: rgba(255, 71, 71, 1);");
+        averageEnergy.setStyle("-fx-padding: 20 20 20 20;-fx-font: 13 arial;-fx-font-weight:bold;-fx-text-fill: rgba(255, 71, 71, 1);");
 
 
 
@@ -449,7 +446,7 @@ public class App extends Application{
         int widthInt = Integer.parseInt(width);
         int heightInt = Integer.parseInt(height);
         int nInt = Integer.parseInt(n);
-        boolean isItDeathFieldBoolean = Boolean.parseBoolean(isItDeathField);
+        boolean isItDeathFieldBoolean =isItDeathField.equals("toksyczne trupy") ? true : false;
         GrassField map = new GrassField(widthInt, heightInt, nInt, isItDeathFieldBoolean);
         this.myMap = map;
         this.myMap.genLimit = Integer.parseInt(genLimit);
@@ -457,9 +454,9 @@ public class App extends Application{
         this.myMap.minEnergyToReproduce = Integer.parseInt(minEnergyToReproduce);
         this.myMap.initEnergy = Integer.parseInt(initEnergy);
         this.myMap.takenEnergyEachDay = Integer.parseInt(takenEnergyEachDay);
-        this.myMap.globe = Boolean.parseBoolean(globe);
+        this.myMap.globe = globe.equals("kula ziemska") ? true : false;
         this.myMap.newGrasses = Integer.parseInt(newGrasses);
-        this.myMap.fullRandomness = Boolean.parseBoolean(fullRandomness);
+        this.myMap.fullRandomness = fullRandomness.equals("pelna losowosc") ? true : false;
         this.myMap.minNrOfMutations = Integer.parseInt(minimumGen);
         this.myMap.maxNrOfMutations = Integer.parseInt(maximumGen);
 
@@ -478,7 +475,7 @@ public class App extends Application{
         });
 
         this.engine = new SimulationEngine(myMap, Integer.parseInt(nrOfAnimals), this);
-        this.engine.someMadness = Boolean.parseBoolean(someMadness);
+        this.engine.someMadness = someMadness.equals("nieco szalenstwa") ? true : false;
         this.threadEngine = new Thread(engine);
 
         threadEngine.start();
@@ -542,7 +539,17 @@ public class App extends Application{
         return hbox;
     }
 
+    public HBox createHboxParameters(Label label,ComboBox checkbox){
+        //TextField text = new TextField("20");
 
+        //Label label = new Label("Starting number of animals");
+        checkbox.setStyle("-fx-font: 15 arial; -fx-text-fill: blue;");
+        label.setStyle("-fx-font: 15 arial;-fx-text-fill;");
+        HBox hbox = new HBox(label,checkbox);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setSpacing(20);
+        return hbox;
+    }
     public void start(Stage primaryStage) throws FileNotFoundException {
         try {
             threadExceptionHandler();
@@ -581,17 +588,25 @@ public class App extends Application{
             Label takenEnergyEachDayLabel = new Label("Taken energy each day");
             HBox takenEnergyEachDayHBox = createHboxParameters(takenEnergyEachDayLabel, takenEnergyEachDayField);
 
-            TextField globeField = new TextField("true");
-            Label globeLabel = new Label("Globe");
-            HBox globeHBox = createHboxParameters(globeLabel, globeField);
+
+            Label globeLabel = new Label("Wariant mapy");
+            ComboBox<String> mapWariantBox = new ComboBox<>();
+            mapWariantBox.setValue("kula ziemska");
+            mapWariantBox.getItems().addAll("kula ziemska", "piekielny portal");
+            HBox globeHBox = createHboxParameters(globeLabel, mapWariantBox);
+
 
             TextField newGrassesField = new TextField("40");
             Label newGrassesLabel = new Label("New grasses");
             HBox newGrassesHBox = createHboxParameters(newGrassesLabel, newGrassesField);
 
-            TextField isItDeathFieldField = new TextField("false");
-            Label isItDeathFieldLabel = new Label("Is it death field?");
-            HBox isItDeathFieldHBox = createHboxParameters(isItDeathFieldLabel, isItDeathFieldField);
+
+            Label isItDeathFieldLabel = new Label("wzrost roslin");
+            ComboBox<String> growingGrasses = new ComboBox<>();
+            growingGrasses.setValue("zalesione rowniki");
+            growingGrasses.getItems().addAll("zalesione rowniki", "toksyczne trupy");
+
+            HBox isItDeathFieldHBox = createHboxParameters(isItDeathFieldLabel, growingGrasses);
 
 
             TextField widthField = new TextField("10");
@@ -606,13 +621,20 @@ public class App extends Application{
             Label nLabel = new Label("Initial grasses");
             HBox nHBox = createHboxParameters(nLabel, nField);
 
-            TextField someMadnessField = new TextField("false");
-            Label someMadnessLabel = new Label("Some madness");
-            HBox someMadnessHBox = createHboxParameters(someMadnessLabel, someMadnessField);
 
-            TextField fullRandomnessField = new TextField("false");
-            Label fullRandomnessLabel = new Label("Full randomness");
-            HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, fullRandomnessField);
+            ComboBox<String> madnessBox = new ComboBox<>();
+            madnessBox.getItems().addAll("pelna predestynacja", "nieco szalenstwa");
+            Label someMadnessLabel = new Label("warianty zachowania");
+            madnessBox.setValue("pelna predestynacja");
+            HBox someMadnessHBox = createHboxParameters(someMadnessLabel, madnessBox);
+
+
+            ComboBox<String> mutationWariant = new ComboBox<>();
+            mutationWariant.getItems().addAll("pelna losowosc", "lekka korekta");
+            mutationWariant.setValue("pelna predestynacja");
+            Label fullRandomnessLabel = new Label("Wariant mutacji");
+
+            HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, mutationWariant);
 
 
             //z tych parametrów jeszcze nie ma pożytku
@@ -654,14 +676,14 @@ public class App extends Application{
                             minEnergyToReproduceField.getText(),
                             initEnergyField.getText(),
                             takenEnergyEachDayField.getText(),
-                            globeField.getText(),
+                            mapWariantBox.getValue(),
                             newGrassesField.getText(),
-                            isItDeathFieldField.getText(),
+                            growingGrasses.getValue(),
                             widthField.getText(),
                             heightField.getText(),
                             nField.getText(),
-                            someMadnessField.getText(),
-                            fullRandomnessField.getText(),
+                            madnessBox.getValue(),
+                            mutationWariant.getValue(),
                             minimalGenField.getText(),
                             maximumGenField.getText(),
                             checkBox.isSelected())

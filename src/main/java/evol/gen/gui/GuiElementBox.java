@@ -42,8 +42,8 @@ public class GuiElementBox {
         this.imageView = new ImageView(image);
 
         if(element.toString().equals("*")){
-            this.imageView.setFitWidth(Math.max(width-16,6));
-            this.imageView.setFitHeight(Math.max(height-16,6));
+            this.imageView.setFitWidth(Math.max(width-10,6));
+            this.imageView.setFitHeight(Math.max(height-10,6));
             label = new Label(element.getPosition().toString());
 
 
