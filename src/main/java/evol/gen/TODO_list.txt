@@ -1,13 +1,5 @@
 Dodałem TODO_list żeby łatwiej sprawdzać postęp co jest zrobione i nie szukać tego w kodzie
 
-gui
-    GuiElementBox - jak chcemy rysować mapę
-
-RestrictedAnimalComparator - jak wszystko jest równe to może jakiś random bo i tak mamy zdecydować chyba które jest 'lepsze' od drugiego
-- jest to potrzebne do rozmnażania. Jeśli zwierzak ma parametry bardzo dobre, ale ma za malo energii, to trzeba go
-inaczej porownywać z innymi zwierzakami.
-
-
 Symulacja:
 usunięcie martwych zwierząt z mapy, - gotowe
 skręt i przemieszczenie każdego zwierzęcia, - gotowe
@@ -16,7 +8,7 @@ rozmnażanie się najedzonych zwierząt znajdujących się na tym samym polu, - 
 wzrastanie nowych roślin na wybranych polach mapy. - gotowe
 
 Parametry: (ma to być zbierane w App w okienku startowym)
-wysokość i szerokość mapy,
+wysokość i szerokość mapy, - zrobione
 wariant mapy (wyjaśnione w sekcji poniżej), - zrobiony
 startowa liczba roślin, - zrobione
 energia zapewniana przez zjedzenie jednej rośliny, - zrobione
@@ -26,7 +18,7 @@ startowa liczba zwierzaków, - zrobione
 startowa energia zwierzaków, - zrobione
 energia konieczna, by uznać zwierzaka za najedzonego (i gotowego do rozmnażania), - zrobione
 energia rodziców zużywana by stworzyć potomka, (zawsze jest to połowa initial energy) - zrobione
-minimalna i maksymalna liczba mutacji u potomków (może być równa 0),
+minimalna i maksymalna liczba mutacji u potomków (może być równa 0), - zrobione
 wariant mutacji (wyjaśnione w sekcji poniżej), (nie wiem jak to sprawdzić)
 długość genomu zwierzaków, - zrobione
 wariant zachowania zwierzaków (wyjaśnione w sekcji poniżej), (nie wiem jak to sprawdzić)
@@ -44,32 +36,37 @@ Powinna umożliwić wybranie jednej z uprzednio przygotowanych gotowych konfigur
 Dostępne konfiguracje mają formę znajdujących się w odpowiednim folderze na dysku plików konfiguracyjnych
 (plik może zawierać po prostu pary klucz + wartość, po jednej na linijkę).
 Istnieje możliwość wczytania alternatywnej, sporządzonej przez użytkownika konfiguracji.
+RACZEJ GOTOWE
 
 Uruchomienie symulacji powinno skutkować pojawieniem się nowego okna obsługującego daną symulację.
 Jednocześnie uruchomionych może być wiele symulacji, każda w swoim oknie, każda na osobnej mapie.
+NIE ZROBIONE
 
 Sekcja symulacji ma wyświetlać animację pokazującą pozycje zwierząt, ich energię w dowolnej formie
 (np. koloru lub paska zdrowia) oraz pozycje roślin - i ich zmiany.
+ZROBIONE
 
 Program musi umożliwiać zatrzymywanie oraz wznawianie animacji w dowolnym momencie (niezależnie dla każdej mapy - patrz niżej)
+ZROBIONE
 
 Program ma pozwalać na śledzenie następujących statystyk dla aktualnej sytuacji w symulacji:
 liczby wszystkich zwierząt, - zrobione
 liczby wszystkich roślin, - zrobione
-liczby wolnych pól, - zrobione (można upiększyć)
+liczby wolnych pól, - zrobione
 najpopularniejszych genotypów, - zrobione
 średniego poziomu energii dla żyjących zwierząt, - zrobione
 średniej długości życia zwierząt dla martwych zwierząt (wartość uwzględnia wszystkie nieżyjące zwierzęta - od początku symulacji) - zrobione
 
 Jeżeli zdecydowano się na to w momencie uruchamiania symulacji, to jej statystyki powinny być zapisywane (każdego dnia) do pliku CSV.
 Plik ten powinnien być "otwieralny" przez dowolny rozujmiejący ten format program (np. MS Excel).
+ZROBIONE
 
 Po zatrzymaniu programu można oznaczyć jedno zwierzę jako wybrane do śledzenia.
 Od tego momentu (do zatrzymania śledzenia) UI powinien przekazywać nam informacje o jego statusie i historii:
 jaki ma genom, - zrobione
 która jego część jest aktywowana, - zrobione (chyba chodzi o indeks ale tak też jest dobrze)
 ile ma energii, - zrobione
-ile zjadł roślin, - TEGO BRAKUJE
+ile zjadł roślin, - zrobione
 ile posiada dzieci, - zrobione
 ile dni już żyje (jeżeli żyje), - zrobione
 którego dnia zmarło (jeżeli żywot już skończyło). - zrobione

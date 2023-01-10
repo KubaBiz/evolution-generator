@@ -145,7 +145,7 @@ public class App extends Application{
         Collections.sort(sortedAnimals,new CopiedAnimalComparator());
 
         VBox vbox = new VBox();
-        int leng = sortedAnimals.size() > 5 ? 5 : sortedAnimals.size();
+        int leng = Math.min(sortedAnimals.size(), 5);
         String mess = leng == 1 ? " najpopularniejszy genom: " : " najpopularniejszych genomow: ";
         Label label = new Label(leng+ mess);
         label.setStyle("-fx-font: 18 arial;-fx-font-weight:bold;");
@@ -299,7 +299,7 @@ public class App extends Application{
                 if(this.checkingPositionOnMap(j,i,rangeY)){
                     this.addEventHandler(result,new Vector2d(j,i));
                 }
-//grid.add(result, pos.x+1, rangeY-pos.y+1);
+                //grid.add(result, pos.x+1, rangeY-pos.y+1);
                 grid.add(result, j+1, rangeY-i+1);
                 GridPane.setHalignment(label, HPos.CENTER);
             }
@@ -722,8 +722,6 @@ public class App extends Application{
 
             HBox fullRandomnessHBox = createHboxParameters(fullRandomnessLabel, mutationWariant);
 
-
-            //z tych parametrów jeszcze nie ma pożytku
             TextField minimalGenField = new TextField("0");
             Label minimalGenLabel = new Label("Minimalna liczba mutacji");
             HBox minimalGenHBox = createHboxParameters(minimalGenLabel, minimalGenField);
